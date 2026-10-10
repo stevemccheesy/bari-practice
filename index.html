@@ -36,7 +36,10 @@ button,select,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--brass);outline-offset:2px}
 
 .wrap{max-width:1240px;margin:0 auto;padding:18px 28px 28px}
-.top{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:18px}
+.top{display:grid;grid-template-columns:1fr auto;gap:16px 20px;align-items:end;margin-bottom:18px}
+.top .topr{display:contents}
+.top .acts{grid-column:2;grid-row:1}
+.top .tabs{grid-column:1/-1;grid-row:2;justify-self:start}
 .brand h1{font-family:var(--display);font-weight:600;font-size:34px;line-height:1;margin:0;letter-spacing:-.01em;font-variation-settings:"opsz" 96}
 .brand p{margin:6px 0 0;color:var(--muted);font-size:14px}
 .tabs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px}
@@ -219,6 +222,103 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
 @media (max-width:760px){ .prow{grid-template-columns:1fr auto;gap:6px 12px}
   .prow .pbar{grid-column:1/-1} .pmeta{grid-column:1/-1} }
 
+/* activity */
+.topr{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn.sess{border-radius:999px;padding:8px 16px;font-variant-numeric:tabular-nums}
+.btn.sess .rd{width:9px;height:9px;border-radius:50%;background:var(--miss);display:inline-block}
+.btn.sess.on{border-color:var(--miss);color:var(--ink)}
+.btn.sess.on .rd{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+.btn.icon{padding:7px 12px;font-size:18px;line-height:1}
+.goalcard{display:grid;grid-template-columns:auto 1fr auto;gap:22px 28px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 24px}
+.ring{position:relative;width:132px;height:132px}
+.ring svg{display:block}
+.ring .rv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .rv b{font-family:var(--display);font-size:40px;font-weight:600;line-height:1;font-variation-settings:"opsz" 120}
+.ring .rv span{font-size:12.5px;color:var(--muted);margin-top:3px}
+.gmid h3{font-family:var(--display);font-size:22px;font-weight:600;margin:0;font-variation-settings:"opsz" 72}
+.gmid p{margin:4px 0 0;font-size:14.5px}
+.wkdots{display:flex;gap:6px;margin-top:12px}
+.wkdots span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--muted)}
+.wkdots i{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:13px;font-weight:700;color:var(--pearl)}
+.wkdots i.done{background:var(--good);border-color:var(--good)}
+.wkdots i.part{border-color:var(--brass);border-style:dashed}
+.wkdots i.today{outline:2px solid var(--ink);outline-offset:2px}
+.gset{display:grid;gap:10px;justify-items:start}
+.stepper{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--pearl)}
+.stepper button{border:0;background:none;padding:6px 12px;cursor:pointer;font-size:16px}
+.stepper output{min-width:2.4ch;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+.streaks{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;grid-column:1/-1}
+.streaks .tile b{font-size:32px}
+.streaks .tile small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.acthead{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:center;margin-bottom:12px}
+.acthead h3{margin:0 auto 0 0}
+.actnav{display:flex;align-items:center;gap:6px}
+.actlab{min-width:150px;text-align:center;font-weight:500;font-variant-numeric:tabular-nums}
+#actChart svg{display:block;width:100%;height:auto}
+.ax{font:500 11px var(--body);fill:var(--muted)}
+.grid{stroke:var(--line);stroke-width:1;opacity:.6}
+.gline{stroke:var(--good);stroke-width:1.5;stroke-dasharray:5 4}
+.glab{font:600 11px var(--body);fill:var(--good)}
+.bar{fill:var(--brass)}
+.bar.met{fill:var(--good)}
+.chk{font:700 12px var(--body);fill:var(--good);text-anchor:middle}
+.hitb{fill:transparent;cursor:default}
+.hitb:hover{fill:var(--brass-wash)}
+.wklab{font:600 11px var(--body);fill:var(--muted);text-anchor:middle}
+.wklab.met{fill:var(--good)}
+.hm{rx:2.5}
+.hm0{fill:var(--line);opacity:.45}
+.hmv{fill:var(--brass)}
+.hmback{fill:var(--brass);opacity:.4}
+.wkdot{fill:var(--good)}
+.hmleg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-top:8px;flex-wrap:wrap}
+.hmleg i{width:12px;height:12px;border-radius:3px;display:inline-block;background:var(--brass)}
+.actsum{margin:10px 0 0;font-size:14.5px}
+.logman{margin-top:14px}
+.logman summary{cursor:pointer;color:var(--muted);font-size:13.5px}
+.achs{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:10px}
+.ach{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:var(--pearl)}
+.ach .ic{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;grid-row:1/3;background:var(--line);color:var(--muted)}
+.ach b{font-size:14px}
+.ach small{color:var(--muted);font-size:12px}
+.ach.got{border-color:var(--good)}
+.ach.got .ic{background:var(--good);color:var(--pearl)}
+.ach .pg{grid-column:2;height:4px;border-radius:2px;background:var(--line);overflow:hidden;margin-top:3px}
+.ach .pg i{display:block;height:100%;background:var(--brass)}
+.sechead{font-family:var(--display);font-size:22px;font-weight:600;margin:30px 0 12px;font-variation-settings:"opsz" 72}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:12px 20px;border-radius:12px;font-weight:600;z-index:50;box-shadow:0 6px 24px rgba(0,0,0,.25);animation:rise .25s ease-out;max-width:calc(100vw - 32px)}
+@keyframes rise{from{transform:translate(-50%,12px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+.ctip{position:fixed;z-index:60;pointer-events:none;background:var(--ink);color:var(--paper);font-size:12.5px;padding:6px 9px;border-radius:7px;white-space:nowrap}
+@media (max-width:820px){ .goalcard{grid-template-columns:auto 1fr} .gset{grid-column:1/-1} .streaks{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:620px){
+  .topr{width:100%}
+  .btn.sess{justify-content:center}
+  .tabs{width:100%;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{white-space:nowrap;padding:8px 13px;flex:none}
+  .goalcard{grid-template-columns:1fr;justify-items:center;text-align:center;padding:18px 16px}
+  .gmid .wkdots{justify-content:center}
+  .gset{justify-items:center}
+  .streaks{width:100%}
+  .acthead h3{width:100%}
+  .actlab{min-width:0;flex:1}
+}
+
+/* sync */
+.acts{display:flex;gap:8px;align-items:center}
+.acct{position:relative}
+.btn.acctb{border-radius:999px;padding:8px 14px;gap:8px;white-space:nowrap}
+.acctb .rd{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block;opacity:.6}
+.acctb.ok .rd{background:var(--good);opacity:1}
+.acctb.err .rd{background:var(--miss);opacity:1}
+.acctb.sync .rd{background:var(--brass);opacity:1;animation:pulse 1.2s ease-in-out infinite}
+.acctp{position:absolute;right:0;top:calc(100% + 8px);z-index:40;width:300px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.acctp p{margin:0 0 4px;font-size:14px;overflow-wrap:anywhere}
+.acctp .row{display:flex;gap:8px;margin-top:12px}
+@media (max-width:620px){ .top{grid-template-columns:1fr} .top .acts{grid-column:1;grid-row:auto} .top .tabs{grid-row:auto;justify-self:stretch} .acts{width:100%} .acct{flex:1} .btn.acctb{width:100%;justify-content:center} .btn.sess{flex:1;width:auto}
+  .acctp{left:0;right:auto;width:min(300px,calc(100vw - 32px))} }
+
 /* flashcards */
 .listen{display:flex;align-items:center;gap:14px;padding:10px 16px;margin-bottom:12px;border-radius:12px;background:var(--panel);border:1px solid var(--line);min-height:48px}
 .listen[hidden]{display:none}
@@ -291,13 +391,24 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
       <h1>Bari practice</h1>
       <p>E♭ baritone with low A. All notes shown at written pitch.</p>
     </div>
+    <div class="topr">
+    <div class="acts">
+      <div class="acct" id="acctWrap">
+        <button class="btn acctb" id="acctBtn" aria-haspopup="true"></button>
+        <div class="acctp" id="acctPanel" hidden></div>
+      </div>
+      <button class="btn sess" id="sessBtn" aria-live="polite"></button>
+    </div>
     <nav class="tabs" role="tablist" aria-label="Practice mode">
       <button role="tab" id="tab-scales" aria-selected="true" aria-controls="view-scales">Scales &amp; arpeggios</button>
       <button role="tab" id="tab-cards" aria-selected="false" aria-controls="view-cards">Note flashcards</button>
       <button role="tab" id="tab-songs" aria-selected="false" aria-controls="view-songs">Songs</button>
       <button role="tab" id="tab-prog" aria-selected="false" aria-controls="view-prog">Progress</button>
     </nav>
+    </div>
   </header>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <div class="ctip" id="ctip" hidden></div>
 
   <main>
   <section id="view-scales" role="tabpanel" aria-labelledby="tab-scales">
@@ -485,6 +596,44 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
     </div>
   </section>
   <section id="view-prog" role="tabpanel" aria-labelledby="tab-prog" hidden>
+    <div class="goalcard" id="goalCard"></div>
+
+    <div class="block actblock">
+      <div class="acthead">
+        <h3>Practice log</h3>
+        <div class="seg" role="radiogroup" aria-label="Time range" id="actRange">
+          <label><input type="radio" name="actv" value="1d">Day</label>
+          <label><input type="radio" name="actv" value="1w" checked>Week</label>
+          <label><input type="radio" name="actv" value="4w">4 weeks</label>
+          <label><input type="radio" name="actv" value="1y">Year</label>
+        </div>
+        <div class="actnav">
+          <button class="btn icon" id="actPrev" aria-label="Earlier">‹</button>
+          <span class="actlab" id="actLab"></span>
+          <button class="btn icon" id="actNext" aria-label="Later">›</button>
+          <button class="btn" id="actToday">Today</button>
+        </div>
+      </div>
+      <div id="actChart"></div>
+      <p class="actsum" id="actSum"></p>
+      <details class="logman">
+        <summary>Practised away from the app? Log it</summary>
+        <div class="editrow" style="margin-top:10px">
+          <label class="field">Date <input type="date" id="manDate"></label>
+          <label class="field">Minutes <input type="number" id="manMin" min="1" max="600" value="30"></label>
+          <button class="btn" id="manAdd">Add to log</button>
+          <span class="hint" id="manMsg"></span>
+        </div>
+      </details>
+    </div>
+
+    <div class="block">
+      <h3>Achievements</h3>
+      <p class="hint" style="margin:2px 0 14px" id="achSub"></p>
+      <div class="achs" id="achList"></div>
+    </div>
+
+    <h3 class="sechead">How well you know things</h3>
     <div class="tiles" id="profTiles"></div>
     <div class="songtop" style="margin:18px 0 8px">
       <label class="field">Order <select id="profSort">
@@ -493,8 +642,10 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
         <option value="reps">Most practised</option>
         <option value="recent">Most recent</option>
       </select></label>
-      <button class="btn" id="profClear">Clear history</button>
+      <button class="btn" id="dataExport">Export everything</button>
+      <label class="btn" style="cursor:pointer">Import<input type="file" id="dataImport" accept="application/json,.json" hidden></label>
     </div>
+    <p class="hint" id="syncHint" style="max-width:76ch;margin:-2px 0 10px"></p>
     <p class="hint" style="max-width:76ch;margin-bottom:18px">Each score is a running average of your mic sessions, weighted by how much each one covered and held back until you have a few reps. It fades slowly once you stop practising something, so the number is how well you would play it <em>today</em>. Best is your high-water mark, marked on each bar.</p>
     <div id="profBody"></div>
   </section>
@@ -510,9 +661,14 @@ const ACCG = {"-2":"dflat","-1":"flat","0":"natural","1":"sharp","2":"dsharp"};
 // vertical offset (font units) so each accidental centers on its note
 const ACCDY = {sharp:-131, natural:-132, flat:-80, dflat:-80, dsharp:-131};
 
+const SYNC_KEYS = ["prof","stats","goal","ach","songs2","sprog"];
+function tsGet(){ try{ return JSON.parse(localStorage.getItem("bari:_ts")||"{}"); }catch(e){ return {}; } }
+function tsPut(k,t){ const m=tsGet(); m[k]=t; try{ localStorage.setItem("bari:_ts",JSON.stringify(m)); }catch(e){} }
 const store = {
   get(k,d){try{const v=localStorage.getItem("bari:"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
-  set(k,v){try{localStorage.setItem("bari:"+k,JSON.stringify(v))}catch(e){}}
+  set(k,v){ try{localStorage.setItem("bari:"+k,JSON.stringify(v))}catch(e){}
+    if(SYNC_KEYS.includes(k)){ tsPut(k,Date.now()); syncTouch(k); } },
+  raw(k,v){ try{localStorage.setItem("bari:"+k,JSON.stringify(v))}catch(e){} }
 };
 
 /* ---------- pitch helpers ---------- */
@@ -530,11 +686,11 @@ const isBlack = m => [1,3,6,8,10].includes(m%12);
 
 /* ---------- fingerings (written pitch, standard) ---------- */
 const BASE = {
-  57:["L1","L2","L3","lbb","lowA","R1","R2","R3"],
-  58:["L1","L2","L3","lbb","R1","R2","R3"],
-  59:["L1","L2","L3","lb","R1","R2","R3"],
+  57:["L1","L2","L3","lowA","R1","R2","R3","rc"],
+  58:["L1","L2","L3","lbb","R1","R2","R3","rc"],
+  59:["L1","L2","L3","lb","R1","R2","R3","rc"],
   60:["L1","L2","L3","R1","R2","R3","rc"],
-  61:["L1","L2","L3","lcs","R1","R2","R3"],
+  61:["L1","L2","L3","lcs","R1","R2","R3","rc"],
   62:["L1","L2","L3","R1","R2","R3"],
   63:["L1","L2","L3","R1","R2","R3","reb"],
   64:["L1","L2","L3","R1","R2"],
@@ -554,9 +710,10 @@ const BASE = {
 };
 function fingering(m){ if(BASE[m]) return BASE[m]; if(m>=74&&m<=85) return ["oct",...BASE[m-12]]; return []; }
 const TIPS = {
-  57:"Finger low B♭, then add the low A key with your left thumb.",
-  58:"Roll the left pinky onto the B♭ key. Keep the air cold and slow.",
-  61:"All six fingers down plus the left pinky C♯ key. The right pinky stays off.",
+  57:"All six fingers, right pinky on low C, and the low A key with your left thumb. Some players also add the left pinky B♭ \u2014 try both on your horn.",
+  58:"All six fingers, right pinky on low C, left pinky on B♭. Keep the air warm and slow.",
+  59:"All six fingers, right pinky on low C, left pinky on B.",
+  61:"All six fingers, right pinky on low C, left pinky on C♯.",
   70:"Two alternates: left 1 with right 1, or left 1 with the side B♭ key.",
   82:"Two alternates: left 1 with right 1, or left 1 with the side B♭ key.",
   72:"Alternate: left 1 with the side C key, handy for B to C trills.",
@@ -566,8 +723,8 @@ const TIPS = {
   74:"First note using the octave key. Keep the throat open so it doesn't crack.",
   86:"Palm keys press with the side of your hand, not your fingertips.",
   87:"Palm keys press with the side of your hand, not your fingertips.",
-  88:"Right hand side key: press with the side of the first finger.",
-  89:"Top of the standard range. Front F with left 1 is an alternate."
+  88:"Palm D and E♭ plus the right-hand side E key. Alternate: front F with left 2 and 3 down.",
+  89:"All three palm keys plus side E. Alternate: roll left 1 up onto front F, keep left 2 down."
 };
 const KEYNAMES = {oct:"octave key",lowA:"low A (thumb)",palmD:"palm D",palmEb:"palm E♭",palmF:"palm F",frontF:"front F",
   bis:"bis B♭",gs:"G♯",lcs:"low C♯",lb:"low B",lbb:"low B♭",sideE:"side high E",sideC:"side C",sideBb:"side B♭",reb:"low E♭",rc:"low C"};
@@ -670,7 +827,7 @@ function register(m){ return m<=73?"Low register":m<=85?"Octave key register":"P
 
 /* ---------- audio ---------- */
 let AC=null;
-function ac(){ if(!AC){ const C=window.AudioContext||window.webkitAudioContext; if(!C) return null; AC=new C(); } if(AC.state==="suspended") AC.resume(); return AC; }
+function ac(){ if(!AC){ const C=window.AudioContext||window.webkitAudioContext; if(!C) return null; try{ AC=new C({latencyHint:"interactive"}); }catch(e){ AC=new C(); } } if(AC.state==="suspended") AC.resume(); return AC; }
 function tone(m, dur){
   const c=ac(); if(!c) return;
   const t=c.currentTime+0.01, f=440*Math.pow(2,(m-21-69)/12);
@@ -850,15 +1007,15 @@ function sclUI(state,msg){
   L.hidden=false; L.className="listen "+(state||""); $("sclMsg").textContent=msg;
 }
 function sclReset(){
-  SM.cand=null; SM.ignore=null; SM.done=false; SM.cool=performance.now()+250;
+  SM.cand=null; SM.ignore=null; SM.done=false; SM.heard=new Set();
   if(SM.on){ S.res=[]; sclUI("","Play the scale from the first note. Wrong notes turn red and it keeps going."); }
 }
 async function sclStart(){
   try{
     stop();
     SM.an=await audioIn(); SM.buf=new Float32Array(SM.an.fftSize); SM.on=true;
-    S.i=0; S.res=[]; SM.done=false; SM.cand=null; SM.ignore=null; SM.cool=performance.now()+300;
-    SM.timer=setInterval(sclTick,40);
+    S.i=0; S.res=[]; SM.done=false; SM.cand=null; SM.ignore=null;
+    SM.timer=setInterval(sclTick,15); SM.lastT=performance.now(); SM.peak=0; SM.heard=new Set();
     sclUI("","Play the scale from the first note. Wrong notes turn red and it keeps going.");
     renderScale(true);
   }catch(e){
@@ -884,23 +1041,35 @@ function sclTick(){
   if(!SM.on||!S.seq.length) return;
   SM.an.getFloatTimeDomainData(SM.buf);
   const r=yin(SM.buf, AC.sampleRate);
+  const now=performance.now(), dt=Math.min(100, now-(SM.lastT||now)); SM.lastT=now;
   $("sclMeter").style.width=Math.min(100,(r.rms||0)/0.15*100)+"%";
   if($("view-scales").hidden) return;
-  const now=performance.now();
+  if(r.f) trackVoiced(dt);
+  // a clear dip in level means a new attack: re-arm so a re-tongued note can register
+  const lvl=r.rms||0; SM.peak=Math.max(lvl, SM.peak*0.92);
+  if(lvl<SM.peak*0.45){ SM.ignore=null; SM.cand=null; }
   if(!r.f){ SM.cand=null; SM.ignore=null; $("sclHear").textContent=""; return; }
   const wm=69+12*Math.log2(r.f/440)+21, near=Math.round(wm), cents=Math.round((wm-near)*100);
   if(near<LO-1||near>HI+1){ SM.cand=null; return; }
   $("sclHear").innerHTML=`Hearing <b>${noteName(near, near%12===10||near%12===3?"flat":"sharp")}</b>, ${Math.abs(cents)<=8?"in tune":Math.abs(cents)+"\u00a2 "+(cents>0?"sharp":"flat")}`;
-  if(SM.done||now<SM.cool) return;
+  if(SM.done) return;
   if(SM.ignore!==null){ if(near===SM.ignore) return; SM.ignore=null; }
-  if(SM.cand!==near){ SM.cand=near; SM.since=now; return; }
-  const held=now-SM.since, want=S.seq[S.i].m;
-  if(near===want && held>=140) sclStep("ok", near);
-  else if(near!==want && held>=400) sclStep("miss", near);
+  SM.heard.add(near);
+  if(SM.cand!==near){ SM.cand=near; SM.since=now; SM.n=1; return; }
+  SM.n++;
+  const held=now-SM.since, want=S.seq[S.i].m, next=S.seq[S.i+1];
+  if(near===want && SM.n>=3 && held>=35) sclStep("ok", near);
+  else if(next && near===next.m && SM.n>=3 && held>=45){
+    // you have already moved on: credit the current note if we caught any of it, then take this one
+    sclStep(SM.heard.has(want)?"ok":"miss", want, true);
+    if(!SM.done) sclStep("ok", near);
+  }
+  else if(near!==want && held>=230) sclStep("miss", near);
 }
-function sclStep(kind, played){
+function sclStep(kind, played, quiet){
   S.res[S.i]=kind;
-  SM.ignore=played; SM.cand=null; SM.cool=performance.now()+120;
+  SM.ignore=played; SM.cand=null; SM.heard=new Set();
+  if(quiet){ if(S.i<S.seq.length-1) S.i++; else { renderScale(); sclFinish(); } return; }
   if(kind==="miss") sclUI("wrong", `That was ${noteName(played)} \u2014 ${nm(S.seq[S.i])}${S.seq[S.i].o} was written. Keep going.`);
   else sclUI("", "Keep going.");
   if(S.i>=S.seq.length-1){ renderScale(); sclFinish(); return; }
@@ -1060,18 +1229,31 @@ function initCards(){
 /* ================= MIC MODE ================= */
 const M={on:false,stream:null,an:null,buf:null,timer:null,state:"wait",cand:null,candSince:0,ignoreM:null,cooldownUntil:0,missedThis:false,advanceT:null};
 const GATE=0.012;
+const PD={dec:null,d:null};
 function yin(buf,sr){
-  const W=1536, tMin=Math.floor(sr/520), tMax=Math.min(Math.floor(sr/55), buf.length-W-1);
-  let e=0; for(let i=0;i<W;i++) e+=buf[i]*buf[i]; const rms=Math.sqrt(e/W);
+  // Analyse the newest ~50 ms of the buffer, not the oldest. Coarse search at half rate, refine at full rate.
+  const W=1536, tMaxF=Math.min(Math.floor(sr/55), buf.length-W-4), N=W+tMaxF+2, off=buf.length-N;
+  let e=0; for(let i=buf.length-W;i<buf.length;i++) e+=buf[i]*buf[i];
+  const rms=Math.sqrt(e/W);
   if(rms<GATE) return {rms};
-  const d=new Float32Array(tMax+2);
-  for(let t=1;t<=tMax+1;t++){ let s=0; for(let i=0;i<W;i++){ const x=buf[i]-buf[i+t]; s+=x*x; } d[t]=s; }
-  let run=0; d[0]=1; for(let t=1;t<=tMax+1;t++){ run+=d[t]; d[t]=run?d[t]*t/run:1; }
+  const M=N>>1;
+  if(!PD.dec||PD.dec.length<M) PD.dec=new Float32Array(M);
+  const x=PD.dec; for(let j=0;j<M;j++) x[j]=(buf[off+2*j]+buf[off+2*j+1])*0.5;
+  const Wd=W>>1, tMinD=Math.max(2,Math.floor(sr/2/470)), tMaxD=Math.min(tMaxF>>1, M-Wd-2);
+  if(!PD.d||PD.d.length<tMaxD+2) PD.d=new Float32Array(tMaxD+2);
+  const d=PD.d;
+  for(let t=1;t<=tMaxD+1;t++){ let q=0; for(let i=0;i<Wd;i++){ const v=x[i]-x[i+t]; q+=v*v; } d[t]=q; }
+  let run=0; d[0]=1; for(let t=1;t<=tMaxD+1;t++){ run+=d[t]; d[t]=run?d[t]*t/run:1; }
   let tau=-1;
-  for(let t=tMin;t<=tMax;t++){ if(d[t]<0.15){ while(t+1<=tMax&&d[t+1]<d[t]) t++; tau=t; break; } }
+  for(let t=tMinD;t<=tMaxD;t++){ if(d[t]<0.15){ while(t+1<=tMaxD&&d[t+1]<d[t]) t++; tau=t; break; } }
   if(tau<0) return {rms};
-  const a=d[tau-1],b=d[tau],c=d[tau+1], den=a-2*b+c; const sh=den?(a-c)/(2*den):0;
-  return {rms, f:sr/(tau+(Math.abs(sh)<1?sh:0))};
+  const df=t=>{ let q=0; for(let i=0;i<W;i++){ const v=buf[off+i]-buf[off+i+t]; q+=v*v; } return q; };
+  const lo=Math.max(2,2*tau-3), hi=Math.min(tMaxF-1,2*tau+3), vals={};
+  let best=lo, bv=Infinity;
+  for(let t=lo;t<=hi;t++){ const v=df(t); vals[t]=v; if(v<bv){ bv=v; best=t; } }
+  const a=vals[best-1]??df(best-1), c=vals[best+1]??df(best+1), den=a-2*bv+c;
+  const sh=den>0?(a-c)/(2*den):0;
+  return {rms, f:sr/(best+(Math.abs(sh)<1?sh:0))};
 }
 function noteName(m,pref){ const n=spellMidi(m,pref||"flat"); return nm(n)+n.o; }
 const gnow = ()=>C.g[C.gi];
@@ -1113,7 +1295,7 @@ async function audioIn(){
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) throw "insecure";
   const c=ac();
   let st;
-  try{ st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}}); }
+  try{ st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,channelCount:1,latency:0}}); }
   catch(err){ if(err&&err.name==="OverconstrainedError") st=await navigator.mediaDevices.getUserMedia({audio:true}); else throw err; }
   AUD.stream=st;
   const src=c.createMediaStreamSource(st); AUD.an=c.createAnalyser(); AUD.an.fftSize=4096; src.connect(AUD.an);
@@ -1128,7 +1310,7 @@ async function micStart(){
   try{
     M.an=await audioIn();
     M.buf=new Float32Array(M.an.fftSize); M.on=true;
-    M.timer=setInterval(micTick,40);
+    M.timer=setInterval(micTick,15); M.lastT=performance.now(); M.peak=0;
     micNewCard(null);
   }catch(e){
     $("cMic").checked=false; M.on=false;
@@ -1154,24 +1336,28 @@ function micTick(){
   if(!M.on||!C.g.length) return;
   M.an.getFloatTimeDomainData(M.buf);
   const r=yin(M.buf, AC.sampleRate);
+  const now=performance.now(), dt=Math.min(100, now-(M.lastT||now)); M.lastT=now;
   $("meter").style.width=Math.min(100,r.rms/0.15*100)+"%";
   if($("view-cards").hidden) return;
-  const now=performance.now();
+  if(r.f) trackVoiced(dt);
+  const lvl=r.rms||0; M.peak=Math.max(lvl, M.peak*0.92);
+  if(lvl<M.peak*0.45){ M.ignoreM=null; M.cand=null; }
   if(!r.f){ M.cand=null; M.ignoreM=null; $("hear").textContent=""; return; }
   const wm=69+12*Math.log2(r.f/440)+21, near=Math.round(wm), cents=Math.round((wm-near)*100);
   if(near<LO-1||near>HI+1){ M.cand=null; return; }
   $("hear").innerHTML=`Hearing <b>${nameWritten(near)}</b>, ${Math.abs(cents)<=8?"in tune":Math.abs(cents)+"¢ "+(cents>0?"sharp":"flat")}`;
   if(M.state==="ok"||now<M.cooldownUntil) return;
   if(M.ignoreM!==null){ if(near===M.ignoreM) return; M.ignoreM=null; }
-  if(M.cand!==near){ M.cand=near; M.candSince=now; return; }
+  if(M.cand!==near){ M.cand=near; M.candSince=now; M.n=1; return; }
+  M.n++;
   const held=now-M.candSince, target=gnow().m;
-  if(near===target && held>=160) micRight(near);
-  else if(near!==target && held>=380 && M.lastWrong!==near+":"+target) micWrong(near);
+  if(near===target && M.n>=3 && held>=45) micRight(near);
+  else if(near!==target && held>=280 && M.lastWrong!==near+":"+target) micWrong(near);
 }
 function micRight(played){
   C.gres[C.gi]="ok"; M.lastWrong=null;
   if(C.gi>=C.g.length-1){ micSuccess(); return; }
-  C.gi++; M.cand=null; M.ignoreM=played; M.cooldownUntil=performance.now()+120;
+  C.gi++; M.cand=null; M.ignoreM=played;
   renderCard();
   listenUI("", `Good. Next: ${nm(gnow())}${gnow().o}.`);
 }
@@ -1540,8 +1726,9 @@ async function recStart(){
       if(r.f){ const wm=69+12*Math.log2(r.f/440)+21; m=Math.round(wm); cents=(wm-m)*100; if(m<LO-2||m>HI+2) m=null; }
       Q.frames.push({t:now-Q.t0, m, cents, rms:r.rms||0});
     }
+    if(r.f && now>=Q.t0) trackVoiced(12);
     if(now-Q.t0 >= total+0.4) recFinish();
-  },20);
+  },12);
 }
 function recFinish(){
   const frames=Q.frames.slice(), bpm=+$("sBpm").value;
@@ -1745,7 +1932,7 @@ function logPractice(id,label,cat,correct,total){
   d.reps++; d.tries+=total; d.hits+=correct; d.last=Date.now();
   const conf=Math.min(1,0.55+d.reps*0.15);
   d.best=Math.max(d.best||0, d.score*conf);
-  PROF[id]=d; store.set("prof",PROF);
+  PROF[id]=d; store.set("prof",PROF); addRun(); actCheck();
   if(!$("view-prog").hidden) renderProf();
 }
 function profNow(d){
@@ -1808,11 +1995,529 @@ function renderProf(){
 }
 function initProf(){
   $("profSort").onchange=renderProf;
-  $("profClear").onclick=()=>{
-    if(!confirm("Clear all practice history? This cannot be undone.")) return;
-    Object.keys(PROF).forEach(k=>delete PROF[k]); store.set("prof",PROF); renderProf();
-  };
   renderProf();
+}
+
+/* ================= ACTIVITY: days, goal, streaks, achievements ================= */
+const ACT = { days: store.get("days",{}), goal: store.get("goal",{days:4,min:10}), ach: store.get("ach",{}),
+              sess: store.get("sess",null), view: "1w", off: 0, saveT: null,
+              remote: {}, remoteLabels: {}, mv: 0, mc: null, mcv: -1 };
+function daysDirty(){ ACT.mv++; }
+function mergedDays(){
+  const devs=Object.values(ACT.remote); if(!devs.length) return ACT.days;
+  if(ACT.mc && ACT.mcv===ACT.mv) return ACT.mc;
+  const out={};
+  const add=src=>Object.entries(src||{}).forEach(([k,r])=>{ const o=out[k]||(out[k]={min:0,runs:0,h:{}});
+    o.min+=r.min||0; o.runs+=r.runs||0; if(r.back) o.back=true;
+    Object.entries(r.h||{}).forEach(([h,m])=>o.h[h]=(o.h[h]||0)+m); });
+  add(ACT.days); devs.forEach(add);
+  ACT.mc=out; ACT.mcv=ACT.mv; return out;
+}
+const p2 = n=>String(n).padStart(2,"0");
+const dkey = d=>`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+const day0 = d=>{ const x=new Date(d); x.setHours(0,0,0,0); return x; };
+const addD = (d,n)=>{ const x=new Date(d); x.setDate(x.getDate()+n); return x; };
+const wk0 = d=>{ const x=day0(d); x.setDate(x.getDate()-((x.getDay()+6)%7)); return x; };   // Monday
+const DOW = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const fmtD = d=>`${DOW[(d.getDay()+6)%7]} ${MON[d.getMonth()]} ${d.getDate()}`;
+const fmtMin = m=> m<1 ? (m>0?"<1 min":"0 min") : m<60 ? `${Math.round(m)} min` : `${Math.floor(m/60)}h ${p2(Math.round(m%60))}m`;
+const dget = k=>mergedDays()[k];
+const dmk = k=>{ daysDirty(); return ACT.days[k]||(ACT.days[k]={min:0,runs:0,h:{}}); };
+const counts = d=>!!d && (d.min>=ACT.goal.min || (d.back && !d.min));
+
+function actSave(now){
+  if(ACT.noSave) return;            // set just before a deliberate reload, so stale memory can't overwrite fresh storage
+  syncDays();
+  if(now){ clearTimeout(ACT.saveT); ACT.saveT=null; store.set("days",ACT.days); return; }
+  if(ACT.saveT) return;
+  ACT.saveT=setTimeout(()=>{ ACT.saveT=null; store.set("days",ACT.days); actCheck(); if(!$("view-prog").hidden) renderAct(); }, 4000);
+}
+function addMinutes(start, end){        // spread a span of time across the day/hour buckets it covers
+  let t=start;
+  while(t<end){
+    const d=new Date(t), nh=new Date(d); nh.setMinutes(60,0,0);
+    const seg=Math.min(end, nh.getTime())-t, k=dkey(d), r=dmk(k), h=d.getHours();
+    r.min+=seg/60000; r.h[h]=(r.h[h]||0)+seg/60000; t+=seg;
+  }
+}
+function trackVoiced(dtMs){ if(ACT.sess || !dtMs) return; const e=Date.now(); addMinutes(e-dtMs, e); actSave(); }
+function addRun(){ dmk(dkey(new Date())).runs++; actSave(); }
+
+/* ---- session timer ---- */
+function sessPaint(){
+  const b=$("sessBtn"); if(!b) return;
+  if(ACT.sess){
+    const sec=Math.floor((Date.now()-ACT.sess.start)/1000);
+    b.className="btn sess on"; b.innerHTML=`<span class="rd"></span>${Math.floor(sec/60)}:${p2(sec%60)} · End practice`;
+  } else { b.className="btn sess"; b.innerHTML=`<span class="rd" style="background:var(--good)"></span>Start practice`; }
+}
+function sessToggle(){
+  if(!ACT.sess){ ACT.sess={start:Date.now()}; store.set("sess",ACT.sess); sessPaint(); toast("Practice timer started. Everything until you hit End counts."); return; }
+  const start=ACT.sess.start, end=Date.now(), mins=(end-start)/60000;
+  if(mins>180 && !confirm(`That timer ran ${fmtMin(mins)}. Log all of it? Cancel throws it away.`)){
+    ACT.sess=null; store.set("sess",null); sessPaint(); return; }
+  ACT.sess=null; store.set("sess",null);
+  if(mins>=0.25) addMinutes(start,end);
+  actSave(true); sessPaint(); actCheck();
+  toast(`Logged ${fmtMin(mins)} of practice.`);
+  if(!$("view-prog").hidden) renderAct();
+}
+
+/* ---- stats ---- */
+function actStats(){
+  const MD=mergedDays(), keys=Object.keys(MD).sort();
+  const today=day0(new Date()), tk=dkey(today);
+  let totalMin=0, practiced=0;
+  keys.forEach(k=>{ totalMin+=MD[k].min||0; if(counts(MD[k])) practiced++; });
+  // day streaks
+  let best=0, run=0, prev=null;
+  keys.filter(k=>counts(MD[k])).forEach(k=>{
+    const d=new Date(k+"T00:00");
+    run = prev && Math.round((d-prev)/864e5)===1 ? run+1 : 1; best=Math.max(best,run); prev=d; });
+  let cur=0, d=counts(dget(tk)) ? today : addD(today,-1);
+  while(counts(dget(dkey(d)))){ cur++; d=addD(d,-1); }
+  // weeks
+  const wkCount=w=>{ let n=0; for(let i=0;i<7;i++) if(counts(dget(dkey(addD(w,i))))) n++; return n; };
+  const thisW=wk0(today), firstW=keys.length?wk0(new Date(keys[0]+"T00:00")):thisW;
+  let wBest=0, wRun=0, weeksMet=0;
+  for(let w=new Date(firstW); w<=thisW; w=addD(w,7)){
+    const met=wkCount(w)>=ACT.goal.days;
+    if(met){ weeksMet++; wRun++; wBest=Math.max(wBest,wRun); } else if(+w!==+thisW) wRun=0;
+  }
+  let wCur=0, w=wkCount(thisW)>=ACT.goal.days ? thisW : addD(thisW,-7);
+  while(wkCount(w)>=ACT.goal.days){ wCur++; w=addD(w,-7); }
+  const thisWeekMin=[0,1,2,3,4,5,6].reduce((a,i)=>a+((dget(dkey(addD(thisW,i)))||{}).min||0),0);
+  // from proficiency
+  const pr=Object.entries(PROF);
+  const strongCount=pr.filter(([,v])=>profNow(v).now>=85).length;
+  const cleanRun=pr.some(([k,v])=>(v.cat==="scales"||v.cat==="pieces") && (v.best||0)>=85);
+  const byType={}; pr.forEach(([k])=>{ const m=/^scale:(\w+):(\d+)$/.exec(k); if(m)(byType[m[1]]=byType[m[1]]||new Set()).add(m[2]); });
+  const maxKeys=Math.max(0,...Object.values(byType).map(x=>x.size));
+  return {totalMin,practiced,best,cur,wBest,wCur,weeksMet,thisWeek:wkCount(thisW),thisW,thisWeekMin,strongCount,cleanRun,maxKeys};
+}
+
+/* ---- achievements ---- */
+const ACHS=[
+  ["first","♪","First session","Get one day on the board.",s=>[s.practiced,1]],
+  ["s3","3","Three in a row","Practise three days running.",s=>[s.best,3]],
+  ["s7","7","Full week","Seven days running.",s=>[s.best,7]],
+  ["s30","30","Thirty straight","Thirty days running.",s=>[s.best,30]],
+  ["g1","✓","Goal getter","Hit your weekly goal.",s=>[s.weeksMet,1]],
+  ["g4","★","Habit","Hit the weekly goal four weeks in a row.",s=>[s.wBest,4]],
+  ["g12","★","Season","Twelve weeks in a row.",s=>[s.wBest,12]],
+  ["h1","1h","First hour","An hour of playing in total.",s=>[Math.floor(s.totalMin),60]],
+  ["h10","10h","Ten hours","Ten hours in total.",s=>[Math.floor(s.totalMin),600]],
+  ["h50","50h","Fifty hours","Fifty hours in total.",s=>[Math.floor(s.totalMin),3000]],
+  ["clean","85","Clean run","Score 85+ on a scale or piece.",s=>[s.cleanRun?1:0,1]],
+  ["twelve","12","All twelve","One kind of scale in all twelve keys.",s=>[s.maxKeys,12]],
+  ["strong","▲","Strong suit","Ten things at Strong.",s=>[s.strongCount,10]]
+];
+function actCheck(silent){
+  const st=actStats(), got=[];
+  ACHS.forEach(([id,,name,,f])=>{ const [c,t]=f(st); if(c>=t && !ACT.ach[id]){ ACT.ach[id]=Date.now(); got.push(name); } });
+  const wk="wk:"+dkey(st.thisW);
+  if(st.thisWeek>=ACT.goal.days && !ACT.ach[wk]){ ACT.ach[wk]=Date.now(); if(!silent) got.unshift("Weekly goal hit — "+st.thisWeek+" of "+ACT.goal.days+" days"); }
+  if(got.length){ store.set("ach",ACT.ach); if(!silent) toast(got.length===1 ? (got[0].startsWith("Weekly")?got[0]:"Achievement: "+got[0]) : `${got.length} new: ${got.join(", ")}`); }
+  return st;
+}
+function toast(msg){
+  const t=$("toast"); if(!t) return;
+  t.textContent=msg; t.hidden=false; t.style.animation="none"; void t.offsetWidth; t.style.animation="";
+  clearTimeout(toast.t); toast.t=setTimeout(()=>t.hidden=true, 4200);
+}
+
+/* ---- charts ---- */
+function niceMax(v){ const steps=[10,15,20,30,45,60,90,120,180,240,360]; return steps.find(x=>x>=v)||Math.ceil(v/60)*60; }
+function barPath(x,y,w,h,r){ r=Math.min(r,w/2,h); if(h<=0) return "";
+  return `M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h}Z`; }
+function barChart(bars, o){
+  const W=1000, H=o.h||210, L=40, R=o.goal?78:10, T=24, B=o.bottom||30, ih=H-T-B;
+  const gaps=bars.reduce((a,b)=>a+(b.sep?14:0),0), gap=o.gap??3;
+  const bw=(W-L-R-gaps-gap*(bars.length-1))/bars.length;
+  const top=niceMax(Math.max(o.floor||10, (o.goal||0)*1.25, ...bars.map(b=>b.v)));
+  const y=v=>T+ih-(v/top)*ih;
+  let g="";
+  [0,top/2,top].forEach(v=>{ g+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L-6}" y="${y(v)+4}" text-anchor="end">${Math.round(v)}</text>`; });
+  let x=L;
+  bars.forEach((b,i)=>{
+    if(b.sep) x+=14;
+    const h=Math.max(0,(b.v/top)*ih);
+    if(h>0) g+=`<path class="bar${b.met?" met":""}" d="${barPath(x,y(b.v),bw,h,Math.min(4,bw/3))}"/>`;
+    else if(b.back) g+=`<rect class="bar" x="${x}" y="${T+ih-3}" width="${bw}" height="3" opacity=".5"/>`;
+    if(b.met && o.checks) g+=`<text class="chk" x="${x+bw/2}" y="${y(b.v)-6}">✓</text>`;
+    if(b.lab) g+=`<text class="ax" x="${x+bw/2}" y="${H-B+16}" text-anchor="middle">${b.lab}</text>`;
+    g+=`<rect class="hitb" x="${x-gap/2}" y="${T-14}" width="${bw+gap}" height="${ih+14}" data-tip="${b.tip.replace(/"/g,"&quot;")}"><title>${b.tip}</title></rect>`;
+    x+=bw+gap;
+  });
+  if(o.goal){ g+=`<line class="gline" x1="${L}" x2="${W-R+4}" y1="${y(o.goal)}" y2="${y(o.goal)}"/><text class="glab" x="${W-R+9}" y="${y(o.goal)-2}">${o.goal} min</text><text class="glab" x="${W-R+9}" y="${y(o.goal)+11}" style="font-weight:500">a day</text>`; }
+  if(o.extra) g+=o.extra(L,W,R,bw,gap,H,B);
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.label}">${g}</svg>`;
+}
+function weekLab(w){ const e=addD(w,6);
+  return w.getMonth()===e.getMonth() ? `${MON[w.getMonth()]} ${w.getDate()}–${e.getDate()}` : `${MON[w.getMonth()]} ${w.getDate()} – ${MON[e.getMonth()]} ${e.getDate()}`; }
+function dayTip(d){ const r=dget(dkey(d))||{min:0,runs:0};
+  return `${fmtD(d)} · ${r.back&&!r.min?"practised (before timing)":fmtMin(r.min)}${r.runs?` · ${r.runs} run${r.runs>1?"s":""}`:""}${counts(r)?" · counts ✓":""}`; }
+function renderAct(){
+  const st=actCheck(true), today=day0(new Date()), v=ACT.view, off=ACT.off;
+  let html="", lab="", sum="";
+  if(v==="1d"){
+    const d=addD(today,off), r=dget(dkey(d))||{min:0,runs:0,h:{}};
+    const bars=[...Array(24)].map((_,h)=>({v:(r.h||{})[h]||0, lab:h%3?"":(h===0?"12a":h<12?h+"a":h===12?"12p":(h-12)+"p"),
+      tip:`${h===0?12:h>12?h-12:h}${h<12?"am":"pm"} · ${fmtMin((r.h||{})[h]||0)}`}));
+    html=barChart(bars,{label:"Minutes played by hour",floor:10});
+    lab = off===0?"Today":off===-1?"Yesterday":fmtD(d);
+    sum = `${fmtMin(r.min)} played${r.runs?`, ${r.runs} scored run${r.runs>1?"s":""}`:""}. ${counts(r)?"✓ This day counts toward your goal.":`Needs ${Math.max(0,Math.ceil(ACT.goal.min-r.min))} more minute${Math.ceil(ACT.goal.min-r.min)===1?"":"s"} to count.`}`;
+  }
+  if(v==="1w"){
+    const w=addD(wk0(today),off*7); let tot=0,n=0;
+    const bars=[0,1,2,3,4,5,6].map(i=>{ const d=addD(w,i), r=dget(dkey(d))||{min:0}; tot+=r.min||0; if(counts(r)) n++;
+      return {v:r.min||0, met:counts(r), back:r.back&&!r.min, lab:`${DOW[i]} ${d.getDate()}`, tip:dayTip(d)}; });
+    html=barChart(bars,{label:"Minutes played per day this week",goal:ACT.goal.min,checks:true,gap:14,floor:ACT.goal.min*2});
+    lab = off===0?"This week":off===-1?"Last week":weekLab(w);
+    sum = `${n} of ${ACT.goal.days} days ${n>=ACT.goal.days?"— goal hit ✓":""} · ${fmtMin(tot)} in total.`;
+  }
+  if(v==="4w"){
+    const w0=addD(wk0(today),(off*4-3)*7); let tot=0,days=0,met=0; const wkn=[];
+    const bars=[];
+    for(let k=0;k<4;k++){ let c=0;
+      for(let i=0;i<7;i++){ const d=addD(w0,k*7+i), r=dget(dkey(d))||{min:0}; tot+=r.min||0; if(counts(r)){c++;days++;}
+        bars.push({v:r.min||0, met:counts(r), back:r.back&&!r.min, sep:k>0&&i===0, lab:i===0?`${MON[d.getMonth()]} ${d.getDate()}`:"", tip:dayTip(d)}); }
+      wkn.push(c); if(c>=ACT.goal.days) met++; }
+    html=barChart(bars,{label:"Minutes per day over four weeks",goal:ACT.goal.min,checks:true,gap:4,bottom:46,floor:ACT.goal.min*2,
+      extra:(L,W,R,bw,gap,H,B)=>{ const span=(W-L-R)/4; return wkn.map((c,k)=>{const ok=c>=ACT.goal.days;
+        return `<text class="wklab${ok?" met":""}" x="${L+span*k+span/2}" y="${H-6}">${ok?"✓ ":""}${c} of ${ACT.goal.days} days</text>`;}).join(""); }});
+    lab = off===0?"Last 4 weeks":`${weekLab(w0).split(" –")[0].split("–")[0]} – ${fmtD(addD(w0,27)).slice(4)}`;
+    sum = `${days} days practised, ${met} of 4 weeks hit the goal · ${fmtMin(tot)} in total.`;
+  }
+  if(v==="1y"){
+    const endW=addD(wk0(today),off*364), startW=addD(endW,-52*7), cell=15.6, gp=3.2, L=34, T=24;
+    let g="", days=0, tot=0, met=0, lastM=-1;
+    for(let c=0;c<53;c++){
+      const w=addD(startW,c*7); let wc=0;
+      if(w.getMonth()!==lastM){ g+=`<text class="ax" x="${L+c*(cell+gp)}" y="${T-9}">${MON[w.getMonth()]}</text>`; lastM=w.getMonth(); }
+      for(let r=0;r<7;r++){
+        const d=addD(w,r); if(d>today) continue;
+        const k=dkey(d), x=dget(k), m=x?x.min:0, ok=counts(x); if(ok){days++;wc++;} tot+=m;
+        const lv = !x||(!m&&!x.back) ? 0 : (x.back&&!m) ? -1 : m<ACT.goal.min ? .3 : m<ACT.goal.min*2 ? .55 : m<ACT.goal.min*4 ? .8 : 1;
+        const cls = lv===0?"hm hm0":lv===-1?"hm hmback":"hm hmv";
+        g+=`<rect class="${cls}" x="${L+c*(cell+gp)}" y="${T+r*(cell+gp)}" width="${cell}" height="${cell}" rx="2.5" ${lv>0?`opacity="${lv}"`:""} data-tip="${dayTip(d).replace(/"/g,"&quot;")}"><title>${dayTip(d)}</title></rect>`;
+      }
+      if(wc>=ACT.goal.days){ met++; g+=`<circle class="wkdot" cx="${L+c*(cell+gp)+cell/2}" cy="${T+7*(cell+gp)+6}" r="3"/>`; }
+    }
+    ["Mon","Wed","Fri"].forEach((n,i)=>g+=`<text class="ax" x="${L-6}" y="${T+(i*2)*(cell+gp)+cell-3}" text-anchor="end">${n}</text>`);
+    const Wd=L+53*(cell+gp)+4, Hh=T+7*(cell+gp)+14;
+    html=`<svg viewBox="0 0 ${Wd} ${Hh}" role="img" aria-label="Practice calendar for the year">${g}</svg>
+      <div class="hmleg">Less <i style="opacity:.2;background:var(--line)"></i><i style="opacity:.3"></i><i style="opacity:.55"></i><i style="opacity:.8"></i><i></i> More
+        <span style="margin-left:14px;display:inline-flex;align-items:center;gap:5px"><i style="width:7px;height:7px;border-radius:50%;background:var(--good)"></i>weekly goal hit</span></div>`;
+    lab = off===0?"Past year":`${MON[startW.getMonth()]} ${startW.getFullYear()} – ${MON[endW.getMonth()]} ${endW.getFullYear()}`;
+    sum = `${days} days practised · ${met} weeks hit the goal · ${fmtMin(tot)} in total · longest streak ${st.best} day${st.best===1?"":"s"}.`;
+  }
+  $("actChart").innerHTML=html; $("actLab").textContent=lab; $("actSum").textContent=sum;
+  $("actNext").disabled = off>=0;
+  renderGoal(st); renderAch(st);
+}
+function renderGoal(st){
+  const g=ACT.goal, n=st.thisWeek, today=day0(new Date()), left=6-((today.getDay()+6)%7), need=Math.max(0,g.days-n);
+  const todayCounts=counts(dget(dkey(today)));
+  const pct=Math.min(1,n/g.days), R=56, C=2*Math.PI*R, done=n>=g.days;
+  const msg = done ? (n>g.days?`Goal beaten by ${n-g.days}. Keep the run going.`:"Goal hit for the week. Anything more is a bonus.")
+    : need > left + (todayCounts?0:1) ? `Out of reach this week — ${need} more needed with ${left} day${left===1?"":"s"} left. Fresh start Monday.`
+    : `${need} more day${need===1?"":"s"} to go, ${left+(todayCounts?0:1)} left in the week.${todayCounts?"":" Today still counts."}`;
+  const dots=[0,1,2,3,4,5,6].map(i=>{ const d=addD(st.thisW,i), r=dget(dkey(d)), c=counts(r), isT=+d===+today;
+    return `<span><i class="${c?"done":r&&r.min>0?"part":""}${isT?" today":""}">${c?"✓":""}</i>${DOW[i][0]}</span>`; }).join("");
+  $("goalCard").innerHTML=`
+    <div class="ring" aria-label="${n} of ${g.days} days this week">
+      <svg width="132" height="132" viewBox="0 0 132 132"><circle cx="66" cy="66" r="${R}" fill="none" stroke="var(--line)" stroke-width="11"/>
+        <circle cx="66" cy="66" r="${R}" fill="none" stroke="${done?"var(--good)":"var(--brass)"}" stroke-width="11" stroke-linecap="round"
+          stroke-dasharray="${C*pct} ${C}" transform="rotate(-90 66 66)"/></svg>
+      <div class="rv"><b>${n}<span style="font-size:22px;color:var(--muted)">/${g.days}</span></b><span>this week</span></div>
+    </div>
+    <div class="gmid"><h3>${done?"Weekly goal hit":"This week"}</h3><p>${msg}</p><div class="wkdots">${dots}</div></div>
+    <div class="gset">
+      <div class="field">Days a week<div class="stepper"><button id="gDn" aria-label="Fewer days">−</button><output id="gDays">${g.days}</output><button id="gUp" aria-label="More days">+</button></div></div>
+      <label class="field">A day counts after<select id="gMin">${[5,10,15,20,30,45,60].map(m=>`<option value="${m}"${m===g.min?" selected":""}>${m} minutes</option>`).join("")}</select></label>
+    </div>
+    <div class="streaks">
+      <div class="tile"><b>${st.cur}</b><span>day streak</span><small>best ${st.best}</small></div>
+      <div class="tile"><b>${st.wCur}</b><span>weeks on goal in a row</span><small>best ${st.wBest}</small></div>
+      <div class="tile"><b>${fmtMin(st.thisWeekMin)}</b><span>played this week</span><small>${st.practiced} days all time</small></div>
+      <div class="tile"><b>${(st.totalMin/60).toFixed(st.totalMin<600?1:0)}</b><span>hours all time</span><small>${Object.keys(ACT.ach).filter(k=>!k.startsWith("wk:")).length} of ${ACHS.length} achievements</small></div>
+    </div>`;
+  const setG=(k,v)=>{ ACT.goal[k]=v; store.set("goal",ACT.goal); renderAct(); };
+  $("gDn").onclick=()=>setG("days",Math.max(1,g.days-1));
+  $("gUp").onclick=()=>setG("days",Math.min(7,g.days+1));
+  $("gMin").onchange=e=>setG("min",+e.target.value);
+}
+function renderAch(st){
+  const earned=ACHS.filter(([id])=>ACT.ach[id]).length;
+  $("achSub").textContent=`${earned} of ${ACHS.length} earned.`;
+  $("achList").innerHTML=ACHS.map(([id,ic,name,desc,f])=>{
+    const [c,t]=f(st), got=ACT.ach[id], dt=got?new Date(got):null;
+    return `<div class="ach${got?" got":""}"><span class="ic" aria-hidden="true">${ic}</span><b>${name}</b>
+      <small>${got?`Earned ${MON[dt.getMonth()]} ${dt.getDate()}`:`${desc} ${Math.min(c,t)} / ${t}`}</small>
+      ${got?"":`<span class="pg"><i style="width:${Math.min(100,c/t*100)}%"></i></span>`}</div>`;
+  }).join("");
+}
+function chartTips(){
+  const tip=$("ctip");
+  document.addEventListener("mousemove",e=>{
+    const t=e.target.closest&&e.target.closest("[data-tip]");
+    if(!t||!t.closest("#actChart")){ tip.hidden=true; return; }
+    tip.textContent=t.dataset.tip; tip.hidden=false;
+    const w=tip.offsetWidth; tip.style.left=Math.min(window.innerWidth-w-8, e.clientX+12)+"px"; tip.style.top=(e.clientY-36)+"px";
+  });
+}
+function initAct(){
+  if(!store.get("daysBackfilled",false)){      // carry over days from history logged before this tracker existed
+    Object.values(PROF).forEach(v=>{ if(v.last){ const k=dkey(new Date(v.last)); const r=dmk(k); if(!r.min) r.back=true; } });
+    store.set("days",ACT.days); store.set("daysBackfilled",true);
+  }
+  $("sessBtn").onclick=sessToggle; sessPaint(); setInterval(()=>{ if(ACT.sess) sessPaint(); },1000);
+  document.querySelectorAll('input[name=actv]').forEach(r=>r.onchange=()=>{ ACT.view=r.value; ACT.off=0; renderAct(); });
+  $("actPrev").onclick=()=>{ ACT.off--; renderAct(); };
+  $("actNext").onclick=()=>{ if(ACT.off<0){ ACT.off++; renderAct(); } };
+  $("actToday").onclick=()=>{ ACT.off=0; renderAct(); };
+  const t=dkey(new Date()); $("manDate").value=t; $("manDate").max=t;
+  $("manAdd").onclick=()=>{
+    const k=$("manDate").value, m=+$("manMin").value;
+    if(!k||!(m>0)){ $("manMsg").textContent="Pick a date and a number of minutes."; return; }
+    const d=new Date(k+"T12:00"); addMinutes(d.getTime(), d.getTime()+m*60000);
+    actSave(true); actCheck(); renderAct(); $("manMsg").textContent=`Added ${m} minutes to ${fmtD(d)}.`;
+  };
+  if(window.self!==window.top){      // embedded previews block downloads; the hosted copy is where export works
+    const b=$("dataExport"), h=document.createElement("span");
+    h.className="hint"; h.textContent="Export from your hosted copy \u2014 this preview can't save files.";
+    b.replaceWith(h);
+  } else $("dataExport").onclick=()=>{
+    actSave(true); const out={};
+    for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k.startsWith("bari:") && k!=="bari:dev" && k!=="bari:owner") out[k]=localStorage.getItem(k); }
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(new Blob([JSON.stringify({app:"bari-practice",v:1,at:new Date().toISOString(),data:out},null,1)],{type:"application/json"}));
+    a.download=`bari-practice-${dkey(new Date())}.json`; document.body.appendChild(a); a.click(); a.remove();
+  };
+  $("dataImport").onchange=e=>{
+    const f=e.target.files[0]; if(!f) return;
+    f.text().then(txt=>{ const j=JSON.parse(txt);
+      if(j.app!=="bari-practice"||!j.data) throw 0;
+      if(!confirm("Replace everything in this browser with the imported history?")) return;
+      ACT.noSave=true;
+      Object.entries(j.data).forEach(([k,v])=>{ if(k.startsWith("bari:") && k!=="bari:dev" && k!=="bari:owner") localStorage.setItem(k,v); });
+      location.reload();
+    }).catch(()=>alert("That file isn't a Bari practice export."));
+  };
+  window.addEventListener("pagehide",()=>actSave(true));
+  document.addEventListener("visibilitychange",()=>{ if(document.hidden) actSave(true); });
+  chartTips(); actCheck(true);
+}
+
+/* ================= CLOUD SYNC (Firebase: Google sign-in + Firestore) ================= */
+const FB_CONFIG = {
+  apiKey: "AIzaSyCl9uNPSqZRi726l0-kjbNWUGQKKmE-w4Y",
+  authDomain: "bari-practice.firebaseapp.com",
+  projectId: "bari-practice",
+  storageBucket: "bari-practice.firebasestorage.app",
+  messagingSenderId: "968666055575",
+  appId: "1:968666055575:web:12dca7aec7618bf1a43ad2"
+};
+const FB_V = "12.19.0";
+var SY = { uid:null, email:"", state:"out", last:0, lastPull:0, err:"", dirty:new Set(), daysDirty:false,
+           pushT:null, busy:false, fb:null, first:false, watching:false };
+const DEV = (()=>{ let d=store.get("dev",null); if(!d){ d=Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4); store.set("dev",d); } return d; })();
+const EMBEDDED = window.self!==window.top;
+
+const CLOUD = {
+  async load(){
+    if(SY.fb) return SY.fb;
+    const u=n=>`https://www.gstatic.com/firebasejs/${FB_V}/firebase-${n}.js`;
+    const [app,auth,fs]=await Promise.all([import(u("app")),import(u("auth")),import(u("firestore"))]);
+    const a=app.initializeApp(FB_CONFIG);
+    SY.fb={A:auth,F:fs,auth:auth.getAuth(a),db:fs.getFirestore(a)};
+    return SY.fb;
+  },
+  async watch(cb){ const f=await this.load(); f.A.onAuthStateChanged(f.auth,cb); },
+  async signIn(){ const f=await this.load(); const p=new f.A.GoogleAuthProvider(); p.setCustomParameters({prompt:"select_account"}); return f.A.signInWithPopup(f.auth,p); },
+  async signOut(){ const f=await this.load(); return f.A.signOut(f.auth); },
+  async pull(uid){
+    const f=await this.load(), F=f.F;
+    const [u,ds]=await Promise.all([F.getDoc(F.doc(f.db,"users",uid)), F.getDocs(F.collection(f.db,"users",uid,"devices"))]);
+    return {user:u.exists()?u.data():null, devices:ds.docs.map(d=>({id:d.id,...d.data()}))};
+  },
+  async pushUser(uid,patch){ const f=await this.load(); return f.F.setDoc(f.F.doc(f.db,"users",uid),patch,{merge:true}); },
+  async pushDevice(uid,dev,data){ const f=await this.load(); return f.F.setDoc(f.F.doc(f.db,"users",uid,"devices",dev),data); }
+};
+
+/* ---- merging ---- */
+const MERGE = {
+  prof:(l,r)=>{ const o={...(l||{})};
+    Object.entries(r||{}).forEach(([k,v])=>{ const a=o[k];
+      o[k] = (!a || (v.last||0)>(a.last||0)) ? {...v, best:Math.max(v.best||0,(a&&a.best)||0)} : {...a, best:Math.max(a.best||0,v.best||0)}; });
+    return o; },
+  ach:(l,r)=>{ const o={...(l||{})}; Object.entries(r||{}).forEach(([k,t])=>{ o[k]=o[k]?Math.min(o[k],t):t; }); return o; },
+  sprog:(l,r,lt,rt)=>{ const o={...(l||{})};
+    Object.entries(r||{}).forEach(([k,v])=>{ const a=o[k]; if(!a){ o[k]=v; return; }
+      o[k]={...(rt>lt?{...a,...v}:{...v,...a}), best:Math.max(a.best||0,v.best||0), cleans:Math.max(a.cleans||0,v.cleans||0)}; });
+    return o; }
+};
+function applyLive(k,v){
+  if(k==="prof"){ Object.keys(PROF).forEach(x=>delete PROF[x]); Object.assign(PROF,v); }
+  else if(k==="stats"){ Object.keys(stats).forEach(x=>delete stats[x]); Object.assign(stats,v); }
+  else if(k==="goal"){ ACT.goal=v; }
+  else if(k==="ach"){ ACT.ach=v; }
+  else if(k==="songs2" && Array.isArray(v) && v.length && !Q.playing && !Q.rec){
+    songs=v; Q.si=Math.min(Q.si,songs.length-1);
+    $("songSel").innerHTML=songs.map((g,i)=>`<option value="${i}">${g.title}</option>`).join(""); $("songSel").value=Q.si;
+    if(!$("view-songs").hidden) renderSong();
+  }
+}
+function applyRemote(r){
+  let changed=false;
+  const rd=(r.user&&r.user.data)||{}, rt=(r.user&&r.user.ts)||{}, lt=tsGet();
+  for(const k of SYNC_KEYS){
+    const lv=store.get(k,null);
+    if(rd[k]==null){ if(lv!=null) SY.dirty.add(k); continue; }
+    let rv; try{ rv=JSON.parse(rd[k]); }catch(e){ continue; }
+    const merged = MERGE[k] ? MERGE[k](lv,rv,lt[k]||0,rt[k]||0) : ((rt[k]||0)>(lt[k]||0) ? rv : (lv==null?rv:lv));
+    const ms=JSON.stringify(merged);
+    if(ms!==JSON.stringify(lv)){ store.raw(k,merged); applyLive(k,merged); changed=true; }
+    if(ms!==JSON.stringify(rv)) SY.dirty.add(k);
+    tsPut(k, Math.max(lt[k]||0, rt[k]||0));
+  }
+  const rem={};
+  (r.devices||[]).forEach(d=>{ if(d.id!==DEV){ try{ rem[d.id]={days:JSON.parse(d.days||"{}"),label:d.label||"another device"}; }catch(e){} } });
+  const before=JSON.stringify(ACT.remote);
+  ACT.remote={}; Object.entries(rem).forEach(([id,x])=>ACT.remote[id]=x.days); ACT.remoteLabels=rem;
+  if(JSON.stringify(ACT.remote)!==before){ daysDirty(); changed=true; }
+  return changed;
+}
+
+/* ---- push / pull ---- */
+async function pushNow(){
+  if(!SY.uid) return;
+  clearTimeout(SY.pushT); SY.pushT=null;
+  const keys=[...SY.dirty]; SY.dirty.clear();
+  const sendDays=SY.daysDirty; SY.daysDirty=false;
+  const lt=tsGet(), patch={data:{},ts:{}};
+  keys.forEach(k=>{ const v=store.get(k,null); if(v!=null){ patch.data[k]=JSON.stringify(v); patch.ts[k]=lt[k]||Date.now(); } });
+  try{
+    if(Object.keys(patch.data).length){ patch.v=1; patch.updated=Date.now(); await CLOUD.pushUser(SY.uid,patch); }
+    if(sendDays){ await CLOUD.pushDevice(SY.uid,DEV,{days:JSON.stringify(ACT.days),label:devLabel(),updated:Date.now()}); }
+    SY.last=Date.now(); SY.state="ok"; SY.err="";
+  }catch(e){ keys.forEach(k=>SY.dirty.add(k)); if(sendDays) SY.daysDirty=true; throw e; }
+}
+function schedulePush(){
+  if(!SY.uid || SY.pushT) return;
+  SY.pushT=setTimeout(()=>{ SY.pushT=null; pushNow().then(paintAcct).catch(e=>{ SY.state="err"; SY.err=syncErrText(e); paintAcct(); }); }, 12000);
+}
+function syncTouch(k){ if(SY && SY.uid){ SY.dirty.add(k); schedulePush(); } }
+function syncDays(){ if(SY && SY.uid){ SY.daysDirty=true; schedulePush(); } }
+async function syncNow(initial){
+  if(!SY.uid || SY.busy) return;
+  SY.busy=true; SY.state="sync"; paintAcct();
+  try{
+    const r=await CLOUD.pull(SY.uid); SY.lastPull=Date.now();
+    const changed=applyRemote(r);
+    if(initial) SY.daysDirty=true;
+    await pushNow();
+    SY.state="ok"; SY.err="";
+    if(changed) refreshViews();
+  }catch(e){ SY.state="err"; SY.err=syncErrText(e); }
+  SY.busy=false; paintAcct();
+}
+function refreshViews(){
+  daysDirty(); actCheck(true);
+  try{ renderScore(); }catch(e){}
+  if(!$("view-prog").hidden){ renderAct(); renderProf(); }
+}
+function wipeLocal(){
+  ACT.noSave=true;
+  [...SYNC_KEYS,"days","daysBackfilled","_ts","sess","dev","owner"].forEach(k=>{ try{ localStorage.removeItem("bari:"+k); }catch(e){} });
+}
+async function onUser(u){
+  if(!u){ SY.uid=null; SY.state="out"; paintAcct(); return; }
+  const owner=store.get("owner",null);
+  if(owner && owner!==u.uid){
+    if(!confirm(`This browser holds another account's practice history. Replace it with the history for ${u.email}?`)){ await CLOUD.signOut(); return; }
+    wipeLocal(); store.set("owner",u.uid); location.reload(); return;
+  }
+  SY.first=!owner; SY.uid=u.uid; SY.email=u.email||"";
+  store.set("owner",u.uid);
+  await syncNow(true);
+}
+function syncErrText(e){
+  const c=(e&&e.code)||"", m=(e&&e.message)||String(e);
+  if(c.includes("permission-denied")) return "The database refused access. Check the Firestore rules.";
+  if(c.includes("unavailable")||/offline/i.test(m)) return "You're offline. It will sync when you're back.";
+  if(c==="auth/unauthorized-domain") return "This site isn't on Firebase's authorized domains list yet.";
+  if(c==="auth/popup-blocked") return "The sign-in window was blocked. Allow pop-ups for this site, then try again.";
+  if(c==="auth/network-request-failed") return "Couldn't reach Google. Check your connection.";
+  if(/dynamically imported module|Importing a module script failed|Failed to fetch/i.test(m)) return "Couldn't load the sign-in library. Check your connection.";
+  return "Sync hit a problem: "+m;
+}
+function devLabel(){
+  const u=navigator.userAgent;
+  const os=/iPhone/.test(u)?"iPhone":/iPad/.test(u)?"iPad":/Android/.test(u)?"Android":/Mac/.test(u)?"Mac":/Windows/.test(u)?"Windows":/Linux/.test(u)?"Linux":"Device";
+  const br=/Edg\//.test(u)?"Edge":/Firefox\//.test(u)?"Firefox":/Chrome\//.test(u)?"Chrome":/Safari\//.test(u)?"Safari":"browser";
+  return os+" · "+br;
+}
+
+/* ---- account chip + panel ---- */
+function agoS(t){ if(!t) return "not yet"; const s=(Date.now()-t)/1000;
+  return s<45?"just now":s<3600?Math.round(s/60)+" min ago":s<86400?Math.round(s/3600)+"h ago":Math.round(s/86400)+" days ago"; }
+function paintAcct(){
+  const b=$("acctBtn"); if(!b) return;
+  const st=SY.state, lab = st==="ok"?"Synced" : st==="sync"?"Syncing…" : st==="err"?(SY.uid?"Sync paused":"Sign-in problem") : "Sign in to sync";
+  b.className="btn acctb "+st; b.innerHTML=`<span class="rd"></span>${lab}`;
+  b.title = SY.err ? SY.err : SY.uid ? `${SY.email} · synced ${agoS(SY.last)}` : "Sign in with Google to keep your history on every device";
+  const h=$("syncHint");
+  if(h) h.textContent = SY.uid
+    ? `Signed in as ${SY.email}. Your history syncs across every device you sign in on. Export is still here if you want a file backup.`
+    : "Saved in this browser only, so another computer starts blank. Sign in (top right) to sync across devices, or export here and import there.";
+  const p=$("acctPanel"); if(p && !p.hidden) paintPanel();
+}
+function paintPanel(){
+  const p=$("acctPanel"), n=Object.keys(ACT.remote||{}).length;
+  p.innerHTML = SY.uid ? `
+      <p><b>${SY.email}</b></p>
+      <p class="hint" style="font-size:13px">Last synced ${agoS(SY.last)} · this ${devLabel()}${n?` and ${n} other device${n>1?"s":""}`:""}</p>
+      ${SY.err?`<p class="notice" style="margin:8px 0 0">${SY.err}</p>`:""}
+      <div class="row"><button class="btn" id="syNow">Sync now</button><button class="btn" id="syOut">Sign out</button></div>`
+    : `<p>${SY.err||"Sign in to sync your history."}</p><div class="row"><button class="btn" id="syIn">Try again</button></div>`;
+  if($("syNow")) $("syNow").onclick=()=>syncNow();
+  if($("syOut")) $("syOut").onclick=async()=>{ try{ await pushNow(); }catch(e){} await CLOUD.signOut(); p.hidden=true; toast("Signed out. Your history stays on this device."); };
+  if($("syIn")) $("syIn").onclick=()=>{ p.hidden=true; acctClick(); };
+}
+async function acctClick(){
+  const p=$("acctPanel");
+  if(SY.uid || (SY.state==="err" && p.hidden)){ p.hidden=!p.hidden; if(!p.hidden) paintPanel(); return; }
+  p.hidden=true;
+  try{
+    if(!SY.fb){ SY.state="sync"; paintAcct(); await CLOUD.load(); }
+    if(!SY.watching){ SY.watching=true; CLOUD.watch(onUser); }
+    await CLOUD.signIn();
+  }catch(e){
+    const c=(e&&e.code)||"";
+    if(c==="auth/popup-closed-by-user"||c==="auth/cancelled-popup-request"){ SY.state="out"; SY.err=""; }
+    else { SY.state="err"; SY.err=syncErrText(e); }
+    paintAcct();
+    if(SY.state==="err"){ $("acctPanel").hidden=false; paintPanel(); }
+  }
+}
+function initSync(){
+  if(EMBEDDED){ const a=$("acctWrap"); if(a) a.remove(); const h=$("syncHint"); if(h) h.textContent="Sign in and export from your hosted copy. This preview can't do either."; return; }
+  $("acctBtn").onclick=acctClick;
+  document.addEventListener("click",e=>{ const p=$("acctPanel"); if(p && !p.hidden && !e.target.closest("#acctWrap")) p.hidden=true; });
+  if(store.get("owner",null)) SY.state="sync";
+  paintAcct();
+  const start=()=>CLOUD.load().then(()=>{ if(!SY.watching){ SY.watching=true; CLOUD.watch(onUser); } })
+    .catch(e=>{ if(store.get("owner",null)){ SY.state="err"; SY.err=syncErrText(e); } else SY.state="out"; paintAcct(); });
+  (window.requestIdleCallback||((f)=>setTimeout(f,1200)))(start);
+  document.addEventListener("visibilitychange",()=>{
+    if(!SY.uid) return;
+    if(document.hidden){ if(SY.dirty.size||SY.daysDirty) pushNow().catch(()=>{}); }
+    else if(Date.now()-SY.lastPull>60000) syncNow();
+  });
+  setInterval(()=>{ if(SY.uid) paintAcct(); }, 30000);
 }
 
 /* ================= tabs + keys ================= */
@@ -1820,9 +2525,10 @@ const TABS=["scales","cards","songs","prog"];
 function setTab(which){
   if(!TABS.includes(which)) which="scales";
   TABS.forEach(t=>{ $("tab-"+t).setAttribute("aria-selected", t===which); $("view-"+t).hidden = t!==which; });
+  try{ const tb=$("tab-"+which), bar=tb.parentElement; bar.scrollLeft = tb.offsetLeft - (bar.clientWidth-tb.offsetWidth)/2; }catch(e){}
   if(which!=="scales"){ stop(); sclStop(); if($("optMic")) $("optMic").checked=false; }
   if(which!=="songs") songStop();
-  if(which==="prog") renderProf();
+  if(which==="prog"){ renderAct(); renderProf(); }
   store.set("tab",which);
 }
 TABS.forEach(t=>$("tab-"+t).onclick=()=>setTab(t));
@@ -1836,7 +2542,7 @@ document.addEventListener("keydown",e=>{
   else if(e.key==="ArrowRight"){ e.preventDefault(); cards?grade(true):(stop(),go(S.i+1,true)); }
   else if(e.key==="ArrowLeft"){ e.preventDefault(); cards?grade(false):(stop(),go(S.i-1,true)); }
 });
-initScales(); initCards(); initSongs(); initProf(); setTab(store.get("tab","scales"));
+initScales(); initCards(); initSongs(); initProf(); initAct(); initSync(); setTab(store.get("tab","scales"));
 </script>
 </body>
 </html>
