@@ -26,7 +26,9 @@ Then open `http://localhost:8000/`.
 pentatonic, and major/minor/dominant-7th arpeggios in all twelve keys, one or
 two octaves. Up-and-back note groups of 2, 3 or 4. Playback with a tempo
 slider, count-in, metronome and loop. Fingering diagram and large note letter
-follow the current note.
+follow the current note. **Listen with mic** follows you note by note and marks
+misses in red; with **Loop** on it keeps listening and starts the next run by
+itself, counting runs as it goes.
 
 **Note flashcards** — staff, note name and fingering as independently
 toggleable faces. One, two or three notes per card, picked close together so
@@ -34,9 +36,12 @@ groups read like real fragments. Filter by register and by key. Missed notes
 resurface more often.
 
 **Songs** — six original blues and jazz études, fully notated, with per-phrase
-coaching, swing playback, a tempo ladder and note-by-note mic scoring. Add
-your own pieces with a compact text notation (`G4:1 Bb4:0.5 B4:0.5 D5:2`,
-one bar per line).
+coaching, swing playback, a tempo ladder and note-by-note mic scoring.
+**Add your own** opens a staff editor: click the staff to place notes (you hear
+each one), click a note to set its length, make it a rest or add a sharp or
+flat, drag it to change pitch. Bars fill themselves, and there's undo and
+play-from-here. Pieces can also be pasted in a compact text notation
+(`G4:1 Bb4:0.5 B4:0.5 D5:2`, one bar per line).
 
 **Progress** — a weekly goal (days per week, and how many minutes make a day
 count), day and week streaks, achievements, and a practice log with day, week,
@@ -84,6 +89,12 @@ Sign-in only works from an authorized domain (the GitHub Pages site, or
 
 **Export everything** and **Import** on the Progress tab still work as a file
 backup, with or without an account.
+
+## Testing
+
+`qa/regress.py` drives every feature in headless Chromium and compares a build
+with the previous release. See [`qa/README.md`](qa/README.md). It runs after
+every release.
 
 ## Notes on the music
 

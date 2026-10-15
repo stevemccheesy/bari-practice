@@ -181,6 +181,33 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
 @media (max-width:1000px){ .sstage{grid-template-columns:1fr auto} }
 @media (max-width:680px){ .sstage{grid-template-columns:1fr} }
 
+/* build your own */
+.sr .hit{fill:transparent}
+.edtools{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:flex-end;margin:14px 0 10px}
+.edstaff{position:relative;background:var(--pearl);border:1px solid var(--line);border-radius:12px;padding:8px 6px;user-select:none;-webkit-user-select:none}
+#edSvg{cursor:crosshair;touch-action:none}
+#edSvg svg{display:block;height:auto}
+.edstaff .sn{opacity:1}
+.edstaff .sn .hit,.edstaff .sr .hit{cursor:pointer}
+.edstaff .sr:hover .hit,.edstaff .sr.cur .hit{fill:var(--brass-wash)}
+.edstaff .sr.cur .glyph,.edstaff .sr.cur .dot-n{fill:var(--brass)}
+.edstaff .sr.virt{opacity:.3}
+.edstaff .sr.virt .hit{cursor:crosshair;fill:transparent}
+.edstaff .sn.play .nh,.edstaff .sn.play .flagp,.edstaff .sn.play .beam,.edstaff .sn.play .glyph{fill:var(--good)}
+.edstaff .sn.play .nh.open{fill:none;stroke:var(--good)}
+.edstaff .sn.play .stem,.edstaff .sn.play .ledger{stroke:var(--good)}
+.ghost{fill:var(--brass);opacity:.5;pointer-events:none}
+.freelab{font:600 11px var(--body);fill:var(--muted);pointer-events:none}
+.ghostlab{font:600 11px var(--body);fill:var(--brass-deep);pointer-events:none}
+#edGhost,#edCaret{pointer-events:none}
+.edcaret{stroke:var(--brass);stroke-width:2;stroke-linecap:round;opacity:.8}
+.edpop{position:absolute;z-index:20;display:flex;flex-wrap:wrap;gap:10px 12px;align-items:flex-end;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;box-shadow:0 8px 24px rgba(0,0,0,.16);max-width:calc(100% - 12px)}
+.edpop[hidden]{display:none}
+.seg.sm label{padding:5px 11px;font-size:13.5px}
+.btn.sm{padding:5px 11px;font-size:13px;min-height:0}
+.edstatus{margin:8px 0 0;font-size:13.5px;color:var(--muted)}
+.btn[disabled]{opacity:.4;cursor:default}
+
 /* progress */
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
 .tile{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
@@ -993,6 +1020,7 @@ function initScales(){
   $("bpm").oninput=()=>{$("bpmVal").textContent=$("bpm").value; if(S.playing){stop();} saveScales()};
   $("bpn").onchange=()=>{stop();saveScales()};
   ["optSound","optClick","optCount","optLoop"].forEach(id=>$(id).onchange=saveScales);
+  $("optLoop").addEventListener("change",()=>{ if(SM.on && SM.done && sclLoop()) sclNextRun(); else if(!sclLoop()) clearTimeout(SM.loopT); });
   $("prev").onclick=()=>{stop();go(S.i-1,true)};
   $("next").onclick=()=>{stop();go(S.i+1,true)};
   $("play").onclick=play;
@@ -1001,20 +1029,22 @@ function initScales(){
 }
 
 /* ---------- scales: follow-my-pace mic listening ---------- */
-const SM={on:false,timer:null,an:null,buf:null,cand:null,since:0,ignore:null,cool:0,done:false};
+const SM={on:false,timer:null,an:null,buf:null,cand:null,since:0,ignore:null,cool:0,done:false,run:1,loopT:null};
+const sclLoop = ()=>$("optLoop").checked;
+const runTag = ()=> sclLoop() ? `Run ${SM.run} \u00b7 ` : "";
 function sclUI(state,msg){
   const L=$("sclListen"); if(!L) return;
   L.hidden=false; L.className="listen "+(state||""); $("sclMsg").textContent=msg;
 }
 function sclReset(){
-  SM.cand=null; SM.ignore=null; SM.done=false; SM.heard=new Set();
+  SM.cand=null; SM.ignore=null; SM.done=false; SM.heard=new Set(); SM.run=1; clearTimeout(SM.loopT);
   if(SM.on){ S.res=[]; sclUI("","Play the scale from the first note. Wrong notes turn red and it keeps going."); }
 }
 async function sclStart(){
   try{
     stop();
     SM.an=await audioIn(); SM.buf=new Float32Array(SM.an.fftSize); SM.on=true;
-    S.i=0; S.res=[]; SM.done=false; SM.cand=null; SM.ignore=null;
+    S.i=0; S.res=[]; SM.done=false; SM.cand=null; SM.ignore=null; SM.run=1; clearTimeout(SM.loopT);
     SM.timer=setInterval(sclTick,15); SM.lastT=performance.now(); SM.peak=0; SM.heard=new Set();
     sclUI("","Play the scale from the first note. Wrong notes turn red and it keeps going.");
     renderScale(true);
@@ -1025,17 +1055,27 @@ async function sclStart(){
 }
 function sclStop(){
   if(!SM.on && !SM.timer){ if($("sclListen")) $("sclListen").hidden=true; return; }
-  SM.on=false; clearInterval(SM.timer); SM.timer=null; audioOut(); SM.an=null;
+  SM.on=false; clearInterval(SM.timer); SM.timer=null; clearTimeout(SM.loopT); audioOut(); SM.an=null;
   $("sclListen").hidden=true; $("sclHear").textContent="";
+}
+function sclNextRun(){            // Loop is on: start the next run without touching the mic
+  clearTimeout(SM.loopT); SM.loopT=null;
+  if(!SM.on || !SM.done) return;
+  const last=S.seq[S.seq.length-1];
+  SM.run++; S.i=0; S.res=[]; SM.done=false; SM.cand=null; SM.heard=new Set();
+  SM.ignore = last ? last.m : null;   // a held final note mustn't count as the first note of the next run
+  renderScale(true);
+  sclUI("", `Run ${SM.run} \u00b7 From the top.`);
 }
 function sclName(){ const t=TYPES[$("sType").value], {l,a}=tonicSpelling();
   return LET[l]+ACCSTR[a]+" "+t.label; }
 function sclFinish(){
   SM.done=true;
-  const ok=S.res.filter(r=>r==="ok").length, n=S.seq.length;
-  sclUI(ok===n?"ok":"wrong", `${ok} of ${n} right. ${ok===n?"Clean run.":"The red notes are the ones to go back to."}`);
+  const ok=S.res.filter(r=>r==="ok").length, n=S.seq.length, loop=sclLoop();
+  sclUI(ok===n?"ok":"wrong", `${runTag()}${ok} of ${n} right. ${ok===n?"Clean run.":"The red notes are the ones to go back to."}${loop?" Next run in a moment.":""}`);
   logPractice("scale:"+$("sType").value+":"+$("sKey").value, sclName(), "scales", ok, n);
   $("sclHear").textContent="";
+  if(loop){ clearTimeout(SM.loopT); SM.loopT=setTimeout(sclNextRun, 1800); }
 }
 function sclTick(){
   if(!SM.on||!S.seq.length) return;
@@ -1070,8 +1110,8 @@ function sclStep(kind, played, quiet){
   S.res[S.i]=kind;
   SM.ignore=played; SM.cand=null; SM.heard=new Set();
   if(quiet){ if(S.i<S.seq.length-1) S.i++; else { renderScale(); sclFinish(); } return; }
-  if(kind==="miss") sclUI("wrong", `That was ${noteName(played)} \u2014 ${nm(S.seq[S.i])}${S.seq[S.i].o} was written. Keep going.`);
-  else sclUI("", "Keep going.");
+  if(kind==="miss") sclUI("wrong", `${runTag()}That was ${noteName(played)} \u2014 ${nm(S.seq[S.i])}${S.seq[S.i].o} was written. Keep going.`);
+  else sclUI("", `${runTag()}Keep going.`);
   if(S.i>=S.seq.length-1){ renderScale(); sclFinish(); return; }
   S.i++; renderScale();
 }
@@ -1505,11 +1545,12 @@ function keyAlts(ka){
   for(let i=0;i<Math.abs(ka);i++) m[list[i][0]] = ka<0?-1:1;
   return m;
 }
+const SG={TOP:66, H:140, SP:12};
 function scoreSVG(ms, opt){
   const perLine = opt.perLine||4, SP=opt.sp||12, s=SP/250;
   const ka=opt.keyAcc||0, nAcc=Math.abs(ka), kAlt=keyAlts(ka);
-  const W=1000, PADL=opt.padL??(104+nAcc*11), PADR=16;
-  const SYS_TOP=66, SYS_H=SYS_TOP+74;
+  const W=opt.w||1000, PADL=opt.padL??(104+nAcc*11), PADR=16;
+  const SYS_TOP=SG.TOP, SYS_H=SG.H;
   const lines=Math.ceil(ms.length/perLine);
   const H=(lines-1)*SYS_H+SYS_TOP+46;
   const yOf=(p,BOT)=>BOT-p*SP/2;
@@ -1549,8 +1590,9 @@ function scoreSVG(ms, opt){
         if(e.rest){
           const g = e.dur>=4?"rWhole" : e.dur>=2?"rHalf" : e.dur>=1?"rQuarter":"rEighth";
           const Y = g==="rWhole" ? yOf(6,BOT) : g==="rHalf" ? yOf(4,BOT) : yOf(4,BOT);
-          out += glyphAt(g, x, Y, s, g==="rWhole"?"top":g==="rHalf"?"bottom":"mid");
-          if(e.dur===1.5||e.dur===3||e.dur===0.75) out+=`<circle class="dot-n" cx="${x+16}" cy="${yOf(5,BOT)}" r="1.9"/>`;
+          let rg = glyphAt(g, x, Y, s, g==="rWhole"?"top":g==="rHalf"?"bottom":"mid");
+          if(e.dur===1.5||e.dur===3||e.dur===0.75) rg+=`<circle class="dot-n" cx="${x+16}" cy="${yOf(5,BOT)}" r="1.9"/>`;
+          out += `<g class="sr" data-m="${e.mi}" data-e="${e.ei}"><rect class="hit" x="${x-11}" y="${BOT-4*SP-14}" width="22" height="${4*SP+28}"/>${rg}</g>`;
           return;
         }
         const p=posOf(e), y=yOf(p,BOT);
@@ -1653,7 +1695,7 @@ function songPlay(){
 
 /* ---------- rendering ---------- */
 function paintScore(){
-  const wrap=$("scoreWrap"); if(!wrap) return;
+  const wrap=$("scoreWrap"); if(!wrap || !Q.ms.length) return;      // nothing loaded yet (first resize runs before the first song)
   const s=sc();
   const r=scoreSVG(Q.ms,{perLine:Q.perLine, keyAcc:sg().keyAcc||0});
   wrap.innerHTML=`<svg viewBox="${r.vb}" width="100%" role="img" aria-label="${sg().title}, bars 1 to ${sg().bars}">${r.html}</svg>`;
@@ -1854,6 +1896,7 @@ function sizeScore(){
   const w=window.innerWidth;
   const pl = w>=1000?4 : w>=680?2 : 2;
   if(pl!==Q.perLine){ Q.perLine=pl; paintScore(); }
+  if($("edSvg")) edRender();
 }
 function initSongs(){
   $("songSel").innerHTML=songs.map((g,i)=>`<option value="${i}">${g.title}</option>`).join("");
@@ -1878,40 +1921,279 @@ function initSongs(){
   window.addEventListener("resize",()=>{ clearTimeout(Q.rsz); Q.rsz=setTimeout(sizeScore,150); });
   sizeScore(); renderSong();
 }
+/* ---------- build your own: click-and-drag staff editor ---------- */
+const LENS=[[0.5,"Eighth"],[1,"Quarter"],[1.5,"Dotted quarter"],[2,"Half"],[3,"Dotted half"],[4,"Whole"]];
+const ED={ ev:[], dur:1, sel:-1, hist:[], pop:false, press:null, playing:false, timer:null, playAt:-1, ms:[], pl:4, w:1000 };
+const lenOpts = v => LENS.map(([d,n])=>`<option value="${d}"${d===v?" selected":""}>${n}</option>`).join("");
+const fmtBeats = b => { const w=Math.floor(b+1e-9), h=b-w>0.01; return `${w||""}${h?"½":""} beat${b>1?"s":""}`; };
+function edSnap(){ ED.hist.push(JSON.stringify({ev:ED.ev,sel:ED.sel})); if(ED.hist.length>150) ED.hist.shift(); }
+function edUndo(){ const h=ED.hist.pop(); if(!h) return; const o=JSON.parse(h); ED.ev=o.ev; ED.sel=o.sel; ED.pop=false; edRender(); }
+function edGapRests(g){ const out=[]; for(const v of [4,3,2,1.5,1,0.5]){ while(g>=v-1e-9){ out.push(v); g-=v; } } return out; }
+function edPack(){                      // fill bars; a note too long for what's left starts the next bar
+  const bars=[]; let bar=[], used=0;
+  ED.ev.forEach((e,i)=>{
+    if(used+e.dur>4+1e-9){ edGapRests(4-used).forEach(v=>bar.push({virt:true,rest:true,dur:v})); bars.push(bar); bar=[]; used=0; }
+    bar.push({...e, ed:i}); used+=e.dur;
+    if(used>=4-1e-9){ bars.push(bar); bar=[]; used=0; }
+  });
+  const open=bar.length>0; if(open) bars.push(bar);
+  return {bars, open, left: open ? 4-used : 0};
+}
+function edMs(pk){
+  const ms=pk.bars.map((bar,mi)=>{ let at=0;
+    return {n:mi+1, ev:bar.map((e,ei)=>{ const x = e.rest ? {rest:true,dur:e.dur} : {...mk(e.l,e.o,e.a), dur:e.dur};
+      x.mi=mi; x.ei=ei; x.at=at; at+=e.dur; x.ed=e.virt?-1:e.ed; x.virt=!!e.virt; return x; })}; });
+  if(!pk.open) ms.push({n:ms.length+1, ev:[]});        // always leave room to keep writing
+  return ms;
+}
+function edRender(){
+  const wrap=$("edSvg"); if(!wrap) return;
+  const pk=edPack(), ms=edMs(pk); ED.ms=ms;
+  const narrow=wrap.clientWidth>0 && wrap.clientWidth<600;
+  ED.pl = narrow ? 1 : Q.perLine; ED.w = narrow ? 500 : 1000;
+  const r=scoreSVG(ms,{perLine:ED.pl, keyAcc:0, w:ED.w});
+  const PADT=40;
+  // label the bar that's still filling with the beats it has left
+  const fm=ms.length-1, free = pk.open ? pk.left : 4, fli=Math.floor(fm/ED.pl), onLine=Math.min(ED.pl, ms.length-fli*ED.pl);
+  const fbw=(ED.w-104-16)/onLine, fx=104+(fm%ED.pl+1)*fbw-6, fy=fli*SG.H+SG.TOP-4*SG.SP-8;
+  const freeLab = ED.ev.length ? `<text class="freelab" x="${fx.toFixed(1)}" y="${fy}" text-anchor="end">${fmtBeats(free)} free</text>` : "";
+  wrap.innerHTML=`<svg viewBox="0 ${-PADT} ${ED.w} ${r.h+PADT}" width="100%" role="img" aria-label="Your piece so far">${r.html}${freeLab}<g id="edCaret"></g><g id="edGhost"></g></svg>`;
+  wrap.querySelectorAll(".sn,.sr").forEach(g=>{
+    const e=ms[+g.dataset.m].ev[+g.dataset.e]; g.dataset.ed=e.ed;
+    if(e.virt) g.classList.add("virt");
+    if(e.ed>=0 && e.ed===ED.sel) g.classList.add("cur");
+    if(e.ed>=0 && e.ed===ED.playAt) g.classList.add("play");
+  });
+  // caret: where the next click will put a note
+  const real=[...wrap.querySelectorAll(".sn,.sr")].filter(g=>+g.dataset.ed>=0);
+  const anchor = ED.sel>=0 ? wrap.querySelector(`[data-ed="${ED.sel}"]`) : real[real.length-1];
+  let cx, y1, y2;
+  if(anchor){ const bb=anchor.getBBox(); cx=bb.x+bb.width+3; y1=bb.y+8; y2=bb.y+bb.height-8; }
+  else { cx=104+16; y1=SG.TOP-4*SG.SP-6; y2=SG.TOP+6; }
+  if(!ED.playing) wrap.querySelector("#edCaret").innerHTML=`<line class="edcaret" x1="${cx}" x2="${cx}" y1="${y1}" y2="${y2}"/>`;
+  const notes=ED.ev.filter(e=>!e.rest).length, nb=pk.bars.length;
+  $("edStatus").textContent = !ED.ev.length ? "Click anywhere on the staff to place your first note."
+    : `${notes} note${notes===1?"":"s"} · ${nb} bar${nb===1?"":"s"} · ${pk.open?`${fmtBeats(pk.left)} left in bar ${nb}`:`bar ${nb} is full`}`
+      + (ED.sel>=0 && ED.sel<ED.ev.length-1 ? " · new notes go after the highlighted one (Esc to add at the end)" : "");
+  $("edUndo").disabled=!ED.hist.length; $("edClear").disabled=!ED.ev.length;
+  edPaintPop();
+}
+function edPoint(ev){ const svg=$("edSvg").querySelector("svg"), pt=svg.createSVGPoint(); pt.x=ev.clientX; pt.y=ev.clientY; return pt.matrixTransform(svg.getScreenCTM().inverse()); }
+function edPitchAt(y){                  // nearest staff, nearest line or space, natural note, kept in the bari's range
+  const lines=Math.max(1, Math.ceil((ED.ms.length||1)/ED.pl));
+  const li=Math.min(lines-1, Math.max(0, Math.round((y-(SG.TOP-2*SG.SP))/SG.H))), BOT=li*SG.H+SG.TOP;
+  const p=Math.round((BOT-y)/(SG.SP/2));
+  let n=mk(((p+30)%7+7)%7, Math.floor((p+30)/7), 0);
+  if(n.m<LO) n=mk(5,3,0); if(n.m>HI) n=mk(3,6,0);
+  return {l:n.l,o:n.o,a:0,m:n.m,li,BOT,p:n.o*7+n.l-30};
+}
+function edGhost(pt){
+  const g=$("edSvg") && $("edSvg").querySelector("#edGhost"); if(!g) return;
+  if(!pt){ g.innerHTML=""; return; }
+  const n=edPitchAt(pt.y), y=n.BOT-n.p*SG.SP/2, x=pt.x; let s="";
+  for(let q=-2;q>=n.p;q-=2) s+=`<line class="ledger" x1="${x-10}" x2="${x+10}" y1="${n.BOT-q*SG.SP/2}" y2="${n.BOT-q*SG.SP/2}" opacity=".5"/>`;
+  for(let q=10;q<=n.p;q+=2) s+=`<line class="ledger" x1="${x-10}" x2="${x+10}" y1="${n.BOT-q*SG.SP/2}" y2="${n.BOT-q*SG.SP/2}" opacity=".5"/>`;
+  g.innerHTML=s+`<ellipse class="ghost" cx="${x}" cy="${y}" rx="5.9" ry="4.2" transform="rotate(-22 ${x} ${y})"/><text class="ghostlab" x="${x+11}" y="${y-7}">${nm(n)}${n.o}</text>`;
+}
+function edInsert(item){
+  edSnap();
+  const at = ED.sel>=0 ? ED.sel+1 : ED.ev.length;
+  ED.ev.splice(at,0,item); ED.sel=at; ED.pop=false; edRender();
+  if(!item.rest) tone(item.m, Math.min(0.7, item.dur*0.35+0.2));
+}
+function edDown(e){
+  if(e.button>0 || ED.playing) return;
+  const fo=document.activeElement; if(fo && fo!==document.body && !fo.closest("#edPop")) fo.blur();   // so keys go to the staff
+  const g=e.target.closest(".sn,.sr"), idx=g?+g.dataset.ed:-1;
+  ED.press={y:e.clientY, idx:(g&&idx>=0)?idx:-1, rest:!!(g&&g.classList.contains("sr")), moved:false};
+  try{ $("edSvg").setPointerCapture(e.pointerId); }catch(_){}
+  e.preventDefault();
+}
+function edMove(e){
+  const pr=ED.press;
+  if(!pr){ const t=e.target.closest(".sn,.sr"); edGhost(t && +t.dataset.ed>=0 ? null : edPoint(e)); return; }
+  if(pr.idx<0 || pr.rest) return;
+  if(!pr.moved && Math.abs(e.clientY-pr.y)<5) return;
+  const ev=ED.ev[pr.idx];
+  if(!pr.moved){ pr.moved=true; edSnap(); ED.sel=pr.idx; ED.pop=false; }
+  const n=edPitchAt(edPoint(e).y);
+  if(n.m!==ev.m){ Object.assign(ev,{l:n.l,o:n.o,a:0,m:n.m,tie:false}); edRender(); edGhost(null); tone(n.m,.3); }
+}
+function edUp(e){
+  const pr=ED.press; ED.press=null; if(!pr) return;
+  try{ $("edSvg").releasePointerCapture(e.pointerId); }catch(_){}
+  if(pr.moved) return;
+  if(pr.idx>=0){
+    if(ED.sel===pr.idx && ED.pop) ED.pop=false;
+    else { ED.sel=pr.idx; ED.pop=true; const ev=ED.ev[pr.idx]; if(!ev.rest) tone(ev.m,.35); }
+    edRender(); return;
+  }
+  if(ED.pop){ ED.pop=false; edRender(); return; }      // a click away just closes the note menu
+  const n=edPitchAt(edPoint(e).y);
+  edInsert({rest:false,dur:ED.dur,l:n.l,o:n.o,a:0,m:n.m});
+}
+function edPaintPop(){
+  const pop=$("edPop"); if(!pop) return;
+  const ev=ED.ev[ED.sel];
+  if(!ED.pop || !ev || ED.playing){ pop.hidden=true; return; }
+  pop.hidden=false;
+  pop.innerHTML=`
+    <label class="field">Length<select id="epLen">${lenOpts(ev.dur)}</select></label>
+    <div class="field">Type<div class="seg sm" role="radiogroup" aria-label="Note or rest">
+      <label><input type="radio" name="epKind" value="note"${ev.rest?"":" checked"}>Note</label>
+      <label><input type="radio" name="epKind" value="rest"${ev.rest?" checked":""}>Rest</label></div></div>
+    <div class="field"${ev.rest?' style="opacity:.4;pointer-events:none"':""}>Pitch<div class="rowwrap" style="gap:4px">
+      <button class="btn sm" id="epUp" aria-label="Higher">▲</button><button class="btn sm" id="epDn" aria-label="Lower">▼</button></div></div>
+    <div class="field"${ev.rest?' style="opacity:.4;pointer-events:none"':""}>Accidental<div class="seg sm" role="radiogroup" aria-label="Accidental">
+      <label title="Natural"><input type="radio" name="epAcc" value="0"${ev.a===0?" checked":""}>♮</label>
+      <label title="Sharp"><input type="radio" name="epAcc" value="1"${ev.a===1?" checked":""}>♯</label>
+      <label title="Flat"><input type="radio" name="epAcc" value="-1"${ev.a===-1?" checked":""}>♭</label></div></div>
+    <button class="btn" id="epDel">Delete</button>`;
+  const g=$("edSvg").querySelector(`[data-ed="${ED.sel}"]`), host=$("edStaff");
+  if(g){                                   // sit just under that note's staff, below the lowest ledger line, so no note on it is covered
+    const svg=$("edSvg").querySelector("svg"), P=svg.createSVGPoint(), li=Math.floor(+g.dataset.m/ED.pl);
+    P.x=0; P.y=li*SG.H+SG.TOP+3*SG.SP; const under=P.matrixTransform(svg.getScreenCTM()).y;
+    const r=g.getBoundingClientRect(), h=host.getBoundingClientRect();
+    pop.style.left=Math.max(6, Math.min(h.width-pop.offsetWidth-6, r.left-h.left-24))+"px";
+    pop.style.top=(Math.max(r.bottom, under)-h.top+2)+"px"; }
+  $("epLen").onchange=e=>{ edSnap(); ev.dur=+e.target.value; ED.dur=ev.dur; $("edDur").value=ev.dur; edRender(); if(!ev.rest) tone(ev.m,.35); };
+  pop.querySelectorAll('input[name=epKind]').forEach(x=>x.onchange=()=>{ edSnap(); ev.rest = x.value==="rest"; edRender(); if(!ev.rest) tone(ev.m,.35); });
+  pop.querySelectorAll('input[name=epAcc]').forEach(x=>x.onchange=()=>{
+    const a=+x.value, n=mk(ev.l,ev.o,a);
+    if(n.m<LO||n.m>HI){ $("aErr").textContent="That would go past the bari's range."; edRender(); return; }
+    edSnap(); ev.a=a; ev.m=n.m; ev.tie=false; $("aErr").textContent=""; edRender(); tone(ev.m,.35); });
+  $("epDel").onclick=edDelete;
+  $("epUp").onclick=()=>{ edStep(1); ED.pop=true; edPaintPop(); };
+  $("epDn").onclick=()=>{ edStep(-1); ED.pop=true; edPaintPop(); };
+}
+function edDelete(){
+  if(ED.sel<0 || !ED.ev.length) return;
+  edSnap(); ED.ev.splice(ED.sel,1); ED.sel=Math.min(ED.sel-1, ED.ev.length-1); ED.pop=false; edRender();
+}
+function edPlay(){
+  if(ED.playing){ edStopPlay(); return; }
+  const flat=[]; edPack().bars.forEach(b=>{ let at=0; b.forEach(e=>{ flat.push({...e,at}); at+=e.dur; }); });
+  if(!flat.length) return;
+  let i=0; if(ED.sel>=0){ const k=flat.findIndex(e=>e.ed===ED.sel); if(k>0) i=k; }
+  ac(); ED.playing=true; ED.pop=false; $("edPlay").textContent="Stop";
+  const beat=60000/Math.max(30,+$("aBpm").value||80), swing=$("aSwing").checked;
+  let t=performance.now();
+  const step=()=>{
+    if(!ED.playing) return;
+    if(i>=flat.length){ edStopPlay(); return; }
+    const e=flat[i], d=evMs(e,beat,swing);
+    ED.playAt=e.virt?-1:e.ed; edRender();
+    if(!e.rest) tone(e.m, d/1000*0.9);
+    i++; t+=d; ED.timer=setTimeout(step, Math.max(0,t-performance.now()));
+  };
+  step();
+}
+function edStopPlay(){ ED.playing=false; clearTimeout(ED.timer); ED.playAt=-1; const b=$("edPlay"); if(b) b.textContent="Play"; edRender(); }
+function edMeasures(){
+  return edPack().bars.map(b=>{
+    let used=b.reduce((a,e)=>a+e.dur,0);
+    const toks=b.map(e=>e.rest?`r:${e.dur}`:`${LET[e.l]}${e.a>0?"#":e.a<0?"b":""}${e.o}:${e.dur}${e.tie?"~":""}`);
+    if(used<4-1e-9) edGapRests(4-used).forEach(v=>toks.push(`r:${v}`));
+    return toks.join(" ");
+  });
+}
+function edKeys(e){
+  if(!$("edSvg") || $("addBox").hidden || $("view-songs").hidden) return;
+  const tag=e.target.tagName, k=e.key, mod=e.metaKey||e.ctrlKey;
+  if(["INPUT","TEXTAREA","SELECT"].includes(tag)) return;
+  const take=()=>{ e.preventDefault(); e.stopPropagation(); };
+  if(mod && k.toLowerCase()==="z"){ take(); edUndo(); return; }
+  if(mod || e.altKey) return;
+  if(k===" "){ if(tag==="BUTTON") return; take(); edPlay(); }
+  else if(k==="Backspace"||k==="Delete"){ take(); edDelete(); }
+  else if(k==="Escape"){ take(); ED.sel=-1; ED.pop=false; edRender(); }
+  else if((k==="ArrowLeft"||k==="ArrowRight") && ED.ev.length){
+    take(); ED.sel = k==="ArrowLeft" ? Math.max(0,(ED.sel<0?ED.ev.length:ED.sel)-1) : Math.min(ED.ev.length-1, ED.sel+1);
+    ED.pop=false; edRender(); const ev=ED.ev[ED.sel]; if(ev&&!ev.rest) tone(ev.m,.3);
+  }
+  else if((k==="ArrowUp"||k==="ArrowDown") && ED.sel>=0 && ED.ev[ED.sel] && !ED.ev[ED.sel].rest){
+    take(); edStep(k==="ArrowUp"?1:-1);
+  }
+}
+function edStep(d){                     // one line or space up or down, kept in range
+  const ev=ED.ev[ED.sel]; if(!ev || ev.rest) return;
+  let l=ev.l+d, o=ev.o; if(l>6){l=0;o++;} if(l<0){l=6;o--;}
+  const n=mk(l,o,0); if(n.m<LO||n.m>HI) return;
+  edSnap(); Object.assign(ev,{l,o,a:0,m:n.m,tie:false}); edRender(); tone(n.m,.3);
+}
+window.addEventListener("keydown", edKeys, true);
+function closeAdd(force){
+  const box=$("addBox");
+  if(!force && ED.ev.length && !confirm("Throw away the piece you're building?")) return false;
+  if(ED.playing) edStopPlay();
+  box.hidden=true; box.innerHTML=""; ED.ev=[]; ED.hist=[]; ED.sel=-1; return true;
+}
 function addSong(){
   const box=$("addBox");
-  if(box.hidden===false){ box.hidden=true; return; }
+  if(box.hidden===false){ closeAdd(); return; }
+  songStop();
+  Object.assign(ED,{ev:[],dur:1,sel:-1,hist:[],pop:false,press:null,playing:false,playAt:-1});
   box.hidden=false;
   box.innerHTML=`<div class="block">
-    <h3>Add your own</h3>
-    <p class="hint" style="margin:4px 0 10px">One bar per line. Each note is a letter, optional # or b, an octave number, then a colon and how many beats it lasts. Use <b>r</b> for a rest. Every line has to add up to 4 beats.<br>
-    Example line: <code>G4:1 Bb4:0.5 B4:0.5 D5:2</code> — a quarter, two eighths, then a half note.</p>
-    <div class="editrow">
+    <h3>Build your own</h3>
+    <p class="hint" style="margin:4px 0 0">Click the staff to place a note at that pitch, and you'll hear it as it lands. Click a note to change its length, turn it into a rest, or add a sharp or flat. Drag a note up or down to move it.</p>
+    <div class="editrow" style="margin-top:12px">
       <input type="text" id="aTitle" placeholder="Title" aria-label="Title">
       <input type="text" id="aSub" placeholder="What it teaches" aria-label="Subtitle">
-      <input type="number" id="aBpm" value="80" min="30" max="300" aria-label="Tempo">
+      <label class="field" style="flex-direction:row;align-items:center;gap:6px">Tempo<input type="number" id="aBpm" value="80" min="30" max="300" aria-label="Tempo"></label>
       <label class="chip"><input type="checkbox" id="aSwing">Swing</label>
     </div>
-    <textarea id="aBars" rows="8" placeholder="G4:2 Bb4:2&#10;C5:2 Bb4:2&#10;G4:4"></textarea>
+    <div class="edtools">
+      <label class="field">New notes<select id="edDur">${lenOpts(ED.dur)}</select></label>
+      <button class="btn" id="edRest">Add a rest</button>
+      <button class="btn" id="edUndo">Undo</button>
+      <button class="btn" id="edPlay">Play</button>
+      <button class="btn" id="edClear">Clear</button>
+    </div>
+    <div class="edstaff" id="edStaff"><div id="edSvg"></div><div class="edpop" id="edPop" hidden></div></div>
+    <p class="edstatus" id="edStatus"></p>
+    <p class="hint" style="margin-top:4px">Keys: ← → move between notes, ↑ ↓ change pitch, Backspace deletes, Ctrl/⌘ Z undoes, Esc goes back to adding at the end, Space plays.</p>
+    <details class="logman">
+      <summary>Paste notation instead</summary>
+      <p class="hint" style="margin:8px 0 6px">One bar per line, for example <code>G4:1 Bb4:0.5 B4:0.5 D5:2</code>. It loads onto the staff above so you can keep editing.</p>
+      <textarea id="aBars" rows="5" placeholder="G4:2 Bb4:2&#10;C5:2 Bb4:2&#10;G4:4"></textarea>
+      <div class="rowwrap" style="margin-top:8px"><button class="btn" id="aLoad">Load onto the staff</button></div>
+    </details>
     <p class="notice" id="aErr"></p>
     <div class="rowwrap"><button class="btn primary" id="aSave">Add it</button><button class="btn" id="aCancel">Cancel</button></div>
   </div>`;
-  $("aCancel").onclick=()=>{ box.hidden=true; box.innerHTML=""; };
-  $("aSave").onclick=()=>{
-    const bars=$("aBars").value.split("\n").map(s=>s.trim()).filter(Boolean);
-    if(!bars.length){ $("aErr").textContent="Add at least one bar."; return; }
+  const sv=$("edSvg");
+  sv.addEventListener("pointerdown",edDown); sv.addEventListener("pointermove",edMove);
+  sv.addEventListener("pointerup",edUp); sv.addEventListener("pointercancel",()=>{ ED.press=null; });
+  sv.addEventListener("pointerleave",()=>{ if(!ED.press) edGhost(null); });
+  $("edDur").onchange=e=>{ ED.dur=+e.target.value; };
+  $("edRest").onclick=()=>edInsert({rest:true,dur:ED.dur,l:6,o:4,a:0,m:71});
+  $("edUndo").onclick=edUndo;
+  $("edPlay").onclick=edPlay;
+  $("edClear").onclick=()=>{ if(!ED.ev.length) return; edSnap(); ED.ev=[]; ED.sel=-1; ED.pop=false; edRender(); };
+  $("aLoad").onclick=()=>{
+    const bars=$("aBars").value.split("\n").map(x=>x.trim()).filter(Boolean);
+    if(!bars.length){ $("aErr").textContent="Paste at least one bar."; return; }
     const r=parseSong(bars);
     if(r.bad.length){ $("aErr").textContent=r.bad.slice(0,4).join("; "); return; }
-    const t=($("aTitle").value||"Untitled").trim();
-    const n=bars.length, secs=[];
+    edSnap(); ED.ev=[]; r.ms.forEach(m=>m.ev.forEach(e=>ED.ev.push(e.rest?{rest:true,dur:e.dur,l:6,o:4,a:0,m:71}:{rest:false,dur:e.dur,l:e.l,o:e.o,a:e.a,m:e.m,tie:!!e.tie})));
+    ED.sel=-1; ED.pop=false; $("aErr").textContent=""; edRender();
+  };
+  $("aCancel").onclick=()=>closeAdd();
+  $("aSave").onclick=()=>{
+    if(!ED.ev.some(e=>!e.rest)){ $("aErr").textContent="Place at least one note first."; return; }
+    const bars=edMeasures(), r=parseSong(bars);
+    if(r.bad.length){ $("aErr").textContent=r.bad.slice(0,4).join("; "); return; }
+    const t=($("aTitle").value||"Untitled").trim(), n=bars.length, secs=[];
     for(let a=1;a<=n;a+=4) secs.push({name:`Bars ${a}–${Math.min(n,a+3)}`, a, b:Math.min(n,a+3), tip:""});
     songs.push({id:"u"+Date.now(), title:t, sub:($("aSub").value||"").trim(), level:"Yours",
-      key:"", ckey:"", bpm:+$("aBpm").value, slow:Math.max(40,Math.round(+$("aBpm").value*0.6)),
+      key:"", ckey:"", bpm:+$("aBpm").value||80, slow:Math.max(40,Math.round((+$("aBpm").value||80)*0.6)),
       feel:$("aSwing").checked?"swing":"straight", bars:n, about:"", measures:bars, sections:secs});
     saveSongs(); Q.si=songs.length-1; Q.sec=0; store.set("songI2",Q.si);
-    $("songSel").innerHTML=songs.map((s,i)=>`<option value="${i}">${s.title}</option>`).join("");
-    $("songSel").value=Q.si; box.hidden=true; box.innerHTML=""; renderSong();
+    $("songSel").innerHTML=songs.map((x,i)=>`<option value="${i}">${x.title}</option>`).join("");
+    $("songSel").value=Q.si; closeAdd(true); renderSong();
   };
+  edRender();
 }
 
 /* ================= PROGRESS ================= */
