@@ -20,6 +20,7 @@ Each check ends up as one of:
 | `same`  | Same output as the base build. |
 | `new`   | The base build doesn't have this feature. |
 | `fixed` | The check raised an error on the base build and doesn't now. |
+| `extended` | A list check (like every scale sequence) kept every old entry and only gained new ones, such as a new scale type. |
 | `DIFF`  | Output changed. A regression unless it's intended, in which case pass `--allow <check>`. |
 | `FAIL`  | The check threw, or the page logged an error while it ran. |
 
@@ -31,8 +32,9 @@ and screenshots of each tab, desktop and phone width, to
 
 - **Shell and layout**: title, tabs, no sideways scrolling at phone and
   desktop widths.
-- **Scales**: every type × key × octaves × start × direction sequence, note
-  groups, fingering and diagram for every note from low A to high F, the
+- **Scales**: every type × key × octaves × start × direction sequence, melodic
+  minor spelling in all twelve keys (both forms), natural signs on the staff,
+  note groups, fingering and diagram for every note from low A to high F, the
   display (staff, big letter, caption, keys pressed), arrow keys and buttons,
   playback, mic follow mode with a skipped and a slurred note, Loop with the
   mic (run after run), saved settings.

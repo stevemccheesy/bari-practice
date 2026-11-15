@@ -22,7 +22,9 @@ Then open `http://localhost:8000/`.
 
 ## What's in it
 
-**Scales & arpeggios** — major, natural and harmonic minor, chromatic, blues,
+**Scales & arpeggios** — major, natural, harmonic and melodic minor (classical:
+raised 6th and 7th going up, natural minor coming down; or jazz: raised both
+ways), chromatic, blues,
 pentatonic, and major/minor/dominant-7th arpeggios in all twelve keys, one or
 two octaves. Up-and-back note groups of 2, 3 or 4. Playback with a tempo
 slider, count-in, metronome and loop. Fingering diagram and large note letter

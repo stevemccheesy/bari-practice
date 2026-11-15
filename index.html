@@ -445,6 +445,8 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
           <option value="major">Major scale</option>
           <option value="natmin">Natural minor scale</option>
           <option value="harmin">Harmonic minor scale</option>
+          <option value="melmin">Melodic minor scale</option>
+          <option value="jazzmin">Jazz melodic minor</option>
           <option value="chrom">Chromatic scale</option>
           <option value="majarp">Major arpeggio</option>
           <option value="minarp">Minor arpeggio</option>
@@ -823,6 +825,7 @@ function staffSVG(notes, opts0={}){
   let out = "";
   for(let i=0;i<5;i++) out+=`<line class="staff-line" x1="4" x2="${W-6}" y1="${BOT-i*SP}" y2="${BOT-i*SP}"/>`;
   out += `<path class="glyph" d="${G.clef.d}" transform="translate(8 ${BOT}) scale(.04 -.04)"/>`;
+  const lastAcc={};
   notes.forEach((n,i)=>{
     const x = X0 + i*spacing + spacing/2;
     const p = n.o*7+n.l-30, y = BOT - p*SP/2;
@@ -830,7 +833,8 @@ function staffSVG(notes, opts0={}){
     let g = `<rect class="hit" x="${x-spacing/2+2}" y="6" width="${spacing-4}" height="${H-12}" rx="6"/>`;
     for(let q=-2;q>=p;q-=2) g+=`<line class="ledger" x1="${x-11}" x2="${x+11}" y1="${BOT-q*5}" y2="${BOT-q*5}"/>`;
     for(let q=10;q<=p;q+=2) g+=`<line class="ledger" x1="${x-11}" x2="${x+11}" y1="${BOT-q*5}" y2="${BOT-q*5}"/>`;
-    if(n.a) g+=glyphPath(ACCG[n.a], x-(n.a===2||n.a===-2?24:20), y, .04);
+    const k=n.l+":"+n.o, showAcc = n.a!==0 || (lastAcc[k]!==undefined && lastAcc[k]!==0); lastAcc[k]=n.a;
+    if(showAcc) g+=glyphPath(ACCG[n.a], x-(n.a===2||n.a===-2?24:20), y, .04, n.a===0?"glyph nat":"glyph");
     g += p>=4 ? `<line class="stem" x1="${x-5.7}" x2="${x-5.7}" y1="${y+1}" y2="${y+35}"/>` : `<line class="stem" x1="${x+5.7}" x2="${x+5.7}" y1="${y-1}" y2="${y-35}"/>`;
     g += `<ellipse class="nh" cx="${x}" cy="${y}" rx="6.4" ry="4.6" transform="rotate(-22 ${x} ${y})"/>`;
     const rc = (opts0.res && opts0.res[i]) ? " "+opts0.res[i] : "";
@@ -885,6 +889,11 @@ const TYPES = {
   major:{iv:[0,2,4,5,7,9,11],deg:[0,1,2,3,4,5,6],minor:false,label:"major scale"},
   natmin:{iv:[0,2,3,5,7,8,10],deg:[0,1,2,3,4,5,6],minor:true,label:"natural minor scale"},
   harmin:{iv:[0,2,3,5,7,8,11],deg:[0,1,2,3,4,5,6],minor:true,label:"harmonic minor scale"},
+  // classical melodic minor: raised 6th and 7th going up, natural minor coming down
+  melmin:{iv:[0,2,3,5,7,9,11],down:[0,2,3,5,7,8,10],deg:[0,1,2,3,4,5,6],minor:true,label:"melodic minor scale",
+    note:"Melodic minor raises the 6th and 7th going up, then comes down as natural minor."},
+  jazzmin:{iv:[0,2,3,5,7,9,11],deg:[0,1,2,3,4,5,6],minor:true,label:"jazz melodic minor",
+    note:"Jazz melodic minor keeps the raised 6th and 7th both ways."},
   chrom:{chrom:true,minor:false,label:"chromatic scale"},
   majarp:{iv:[0,4,7],deg:[0,2,4],minor:false,label:"major arpeggio"},
   minarp:{iv:[0,3,7],deg:[0,2,4],minor:true,label:"minor arpeggio"},
@@ -910,7 +919,7 @@ function fillStarts(prefer){
   const calc = n=>{ const r=[]; for(let o=2;o<=6;o++){ const t=mk(l,o,a); if(t.m>=LO && t.m+12*n<=HI) r.push(t);} return r; };
   opts=calc(n); let note="";
   if(!opts.length && n===2){ note=`Two octaves of ${LET[l]+ACCSTR[a]} runs past high F, so this shows one octave.`; n=1; opts=calc(1); }
-  $("notice").textContent=note;
+  $("notice").textContent=[note, TYPES[$("sType").value].note].filter(Boolean).join(" ");
   S.octs=n;
   const prev = prefer ?? $("sStart").value;
   $("sStart").innerHTML = opts.map(t=>`<option value="${t.o}">${nm(t)}${t.o} (${t.m<=66?"low":t.m<=78?"middle":"high"})</option>`).join("");
@@ -927,10 +936,12 @@ function buildSeq(){
     S.seq = $("sDir").value==="updown"? up.concat(down) : up;
     S.downFull=[up[up.length-1]].concat(down);
   } else {
-    for(let o=0;o<n;o++) T.iv.forEach((iv,j)=>up.push(spellDeg(tonic,T.deg[j]+7*o,iv+12*o)));
-    up.push(spellDeg(tonic,7*n,12*n));
-    S.seq = $("sDir").value==="updown"? up.concat(up.slice(0,-1).reverse()) : up;
-    S.downFull=up.slice().reverse();
+    const run=ivs=>{ const r=[]; for(let o=0;o<n;o++) ivs.forEach((iv,j)=>r.push(spellDeg(tonic,T.deg[j]+7*o,iv+12*o)));
+      r.push(spellDeg(tonic,7*n,12*n)); return r; };
+    up=run(T.iv);
+    const dn = T.down ? run(T.down) : up;          // melodic minor comes down a different way
+    S.seq = $("sDir").value==="updown"? up.concat(dn.slice(0,-1).reverse()) : up;
+    S.downFull=dn.slice().reverse();
   }
   // up-and-back note groups: e.g. groups of 3 -> C D E F E D C, D E F G F E D, ...
   const g=+$("sGroup").value, pv=$("preview"); pv.textContent="";

@@ -146,6 +146,27 @@ def _(env):
             out[f"{t}:{k}:g{g}"] = E(pg, '()=>[$("preview").textContent, S.seq.map(n=>nm(n)+n.o+(n.gs?"|":"")).join(" ")]')
     return out
 
+@check("scales.melodic_minor")
+def _(env):
+    pg = env.page()
+    if not E(pg, '!!$("sType").querySelector(\'option[value="melmin"]\')'): return "n/a"
+    out = {}
+    for t in ("melmin", "jazzmin"):
+        for k in range(12):
+            E(pg, f'()=>({SET_SCALE})(["{t}","{k}","1",null,"updown","0"])')
+            out[f"{t}:{k}"] = E(pg, '()=>[$("sKey").selectedOptions[0].text, sclName(), S.seq.map(n=>nm(n)+n.o).join(" "), [...$("staff").querySelectorAll(".nt")].filter(g=>g.querySelector(".nat")).map(g=>+g.dataset.i).join(","), $("notice").textContent]')
+    E(pg, f'()=>({SET_SCALE})(["melmin","9","2",null,"updown","3"])')
+    out["groups"] = E(pg, '()=>S.seq.map(n=>nm(n)+(n.gs?"|":"")).join(" ")')
+    return out
+
+@check("scales.staff_naturals")
+def _(env):
+    pg = env.page(); out = {}
+    for t, k in (("chrom", "0"), ("chrom", "3"), ("harmin", "9"), ("blues", "4")):
+        E(pg, f'()=>({SET_SCALE})(["{t}","{k}","1",null,"updown","0"])')
+        out[f"{t}:{k}"] = E(pg, '()=>[...$("staff").querySelectorAll(".nt")].filter(g=>[...g.querySelectorAll(".glyph")].length && g.querySelector(".glyph").getAttribute("d")===G.natural.d).map(g=>nm(S.seq[+g.dataset.i])).join(" ")')
+    return out
+
 @check("scales.fingerings")
 def _(env):
     pg = env.page()
@@ -714,13 +735,19 @@ def main():
         if B is None: rows.append(("ok", name, [])); continue
         b = B.get(name, {"value": "n/a", "errors": []})
         bv, tv = b["value"], t["value"]
+        extended = False
         if isinstance(bv, dict) and "_lines" in bv:
             same = bv["sha"] == tv["sha"]; detail = [] if same else diff_lines(bv["_lines"], tv["_lines"])
+            if not same:                    # every old line still there, only new ones added: a new option, not a regression
+                added = [l for l in tv["_lines"] if l not in set(bv["_lines"])]
+                extended = set(bv["_lines"]) <= set(tv["_lines"])
+                if extended: detail = [f"    {len(added)} lines added, all {len(bv['_lines'])} from the base unchanged; e.g. {added[0][:160]}"]
         else:
             same = bv == tv; detail = [] if same else diff_lines(bv, tv)
         if b["errors"]: rows.append(("fixed", name, ["    base: " + e[:200] for e in b["errors"][:3]] + detail))
         elif same: rows.append(("same", name, []))
         elif bv == "n/a" or b["errors"] and bv is None: rows.append(("new", name, []))
+        elif extended: rows.append(("extended", name, detail))
         elif name in a.allow: rows.append(("allowed", name, detail))
         else: bad += 1; rows.append(("DIFF", name, detail))
     print()
