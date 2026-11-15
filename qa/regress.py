@@ -252,6 +252,36 @@ def _(env):
     E(pg, '()=>{ $("optMic").checked=false; $("optMic").onchange(); }')
     return {"run1": [r1, m1], "restarted": a, "run2": [r2, b], "loop_off": c, "mic_released": E(pg, "AUD.refs")}
 
+HELD = r'''()=>{
+  window.__T=0; performance.now=()=>__T; window.__next={f:0,rms:0}; yin=()=>__next; clearInterval(SM.timer); SM.lastT=0;
+  S.i=0; S.res=[]; SM.done=false; SM.cand=null; SM.ignore=null; SM.peak=0; SM.heard=new Set();
+  window.__run=fr=>{ const at=[]; for(const [m,c,rms] of fr){ __T+=15;
+      __next={f: m==null?0:440*Math.pow(2,(m+(c||0)/100-90)/12), rms: m==null?0.004:(rms??0.1)}; const i0=S.i; sclTick(); if(S.i!==i0) at.push(__T); }
+    return [at.join(","), S.res.map(x=>x||"-").join(",")]; };
+  window.__hold=(m,ms,c=0,rms=0.1)=>Array.from({length:Math.round(ms/15)},()=>[m,c,rms]);
+}'''
+
+@check("scales.mic_held_notes")
+def _(env):
+    """Holding a note: dropouts, glitches, swells and drift must not count as the next note; real changes must."""
+    cases = {
+        "dropout": "[...__hold(60,500), [null], ...__hold(60,800)]",
+        "octave_glitch": "[...__hold(60,500), [72], [72], ...__hold(60,800)]",
+        "swell": "[...__hold(60,500), ...__hold(60,75,0,0.03), ...__hold(60,800)]",
+        "taper": "[...__hold(60,600), ...Array.from({length:30},(_,k)=>[60,0,0.1*(1-k/34)]), ...__hold(60,300,0,0.012)]",
+        "drift_to_next": "[...__hold(60,300), ...__hold(62,300), ...__hold(64,500), ...__hold(64,90,55), ...__hold(64,600)]",
+        "clean": "[...__hold(60,400), ...__hold(62,400), ...__hold(64,400), ...__hold(65,400)]",
+        "half_step_30_flat": "[...__hold(60,300), ...__hold(62,300), ...__hold(64,400), ...__hold(65,300,-30)]",
+        "wrong_note": "[...__hold(60,400), ...__hold(66,400)]",
+        "skip_a_note": "[...__hold(60,400), ...__hold(64,400)]",
+        "stop_and_replay": "[...__hold(60,400), ...Array(8).fill([null]), ...__hold(60,400)]",
+    }
+    out = {}
+    for name, frames in cases.items():
+        pg = env.page(); mic_on(pg, False); E(pg, HELD)
+        out[name] = E(pg, f"()=>__run({frames})"); pg.close()
+    return out
+
 @check("scales.settings_persist")
 def _(env):
     pg = env.page()

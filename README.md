@@ -57,7 +57,10 @@ practised, with your all-time best alongside.
 
 Pitch detection uses the YIN algorithm over the Web Audio API, entirely on
 device. It analyses the newest ~50 ms of audio every 15 ms, with a half-rate
-coarse search refined at full rate, so a new note registers in roughly 100 ms. Nothing is recorded, stored or transmitted. The browser will ask for
+coarse search refined at full rate, so a new note registers in roughly 100 ms.
+A note you're holding only counts once: swells, tapers, brief dropouts and drift
+toward the next note don't move you on, and a repeated note needs a re-tongue or
+a breath. Nothing is recorded, stored or transmitted. The browser will ask for
 permission the first time a listening feature is switched on.
 
 If the prompt never appears, the page is most likely being served over

@@ -36,7 +36,9 @@ and screenshots of each tab, desktop and phone width, to
   minor spelling in all twelve keys (both forms), natural signs on the staff,
   note groups, fingering and diagram for every note from low A to high F, the
   display (staff, big letter, caption, keys pressed), arrow keys and buttons,
-  playback, mic follow mode with a skipped and a slurred note, Loop with the
+  playback, mic follow mode with a skipped and a slurred note, held notes
+  (dropouts, glitches, swells, tapers and drift must not count as the next
+  note; clean changes, wrong notes and replays must), Loop with the
   mic (run after run), saved settings.
 - **Flashcards**: options, the note pool for every register/key/accidental
   combination, dealing 1–3 note cards (seeded, so it's repeatable), each

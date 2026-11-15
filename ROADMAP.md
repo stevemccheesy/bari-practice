@@ -11,7 +11,9 @@ Nothing queued yet.
 - **v1.3** — Scales: melodic minor in all twelve keys, classical (raised 6th
   and 7th going up, natural minor coming down) and jazz (raised both ways).
   The scale staff now shows a natural sign when a note comes back after being
-  sharpened or flattened earlier in the run.
+  sharpened or flattened earlier in the run. Listening on scales no longer
+  jumps ahead while you hold a long note: a breath swell, a dropout or a
+  pitch drift toward the next note used to count as a wrong next note.
 - **v1.2** — Scales: with Listen with mic and Loop on, it keeps listening run
   after run with a run counter. Songs: Add your own is now a staff editor
   (click to place, per-note length / rest / accidental menu, drag to change

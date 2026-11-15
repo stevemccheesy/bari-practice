@@ -1040,7 +1040,7 @@ function initScales(){
 }
 
 /* ---------- scales: follow-my-pace mic listening ---------- */
-const SM={on:false,timer:null,an:null,buf:null,cand:null,since:0,ignore:null,cool:0,done:false,run:1,loopT:null};
+const SM={on:false,timer:null,an:null,buf:null,cand:null,since:0,ignore:null,quiet:0,cool:0,done:false,run:1,loopT:null};
 const sclLoop = ()=>$("optLoop").checked;
 const runTag = ()=> sclLoop() ? `Run ${SM.run} \u00b7 ` : "";
 function sclUI(state,msg){
@@ -1096,15 +1096,21 @@ function sclTick(){
   $("sclMeter").style.width=Math.min(100,(r.rms||0)/0.15*100)+"%";
   if($("view-scales").hidden) return;
   if(r.f) trackVoiced(dt);
-  // a clear dip in level means a new attack: re-arm so a re-tongued note can register
+  // SM.ignore is the note you just played, while you're still holding it: it has been counted and won't be
+  // counted again. Only a real break frees it: about 80 ms of silence, or a quick dip in level (a re-tongue)
+  // when the next written note is that same pitch. Swells, tapers and one-frame dropouts aren't a new note.
   const lvl=r.rms||0; SM.peak=Math.max(lvl, SM.peak*0.92);
-  if(lvl<SM.peak*0.45){ SM.ignore=null; SM.cand=null; }
-  if(!r.f){ SM.cand=null; SM.ignore=null; $("sclHear").textContent=""; return; }
+  const want0 = S.seq[S.i] ? S.seq[S.i].m : null;
+  if(SM.ignore!==null && SM.ignore===want0 && lvl<SM.peak*0.45){ SM.ignore=null; SM.cand=null; }
+  if(!r.f){ SM.cand=null; SM.quiet=(SM.quiet||0)+dt; if(SM.quiet>=80) SM.ignore=null; $("sclHear").textContent=""; return; }
+  SM.quiet=0;
   const wm=69+12*Math.log2(r.f/440)+21, near=Math.round(wm), cents=Math.round((wm-near)*100);
   if(near<LO-1||near>HI+1){ SM.cand=null; return; }
   $("sclHear").innerHTML=`Hearing <b>${noteName(near, near%12===10||near%12===3?"flat":"sharp")}</b>, ${Math.abs(cents)<=8?"in tune":Math.abs(cents)+"\u00a2 "+(cents>0?"sharp":"flat")}`;
   if(SM.done) return;
-  if(SM.ignore!==null){ if(near===SM.ignore) return; SM.ignore=null; }
+  // still on the held note? A glitch, or drift toward the note next door, doesn't move you on: a different
+  // pitch has to be clearly there (more than 60 cents from the held note) to count
+  if(SM.ignore!==null && (near===SM.ignore || Math.abs(wm-SM.ignore)<0.6)){ SM.cand=null; return; }
   SM.heard.add(near);
   if(SM.cand!==near){ SM.cand=near; SM.since=now; SM.n=1; return; }
   SM.n++;
