@@ -249,6 +249,15 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
 @media (max-width:760px){ .prow{grid-template-columns:1fr auto;gap:6px 12px}
   .prow .pbar{grid-column:1/-1} .pmeta{grid-column:1/-1} .pnext{grid-column:1/-1} .pnext:empty{display:none} }
 
+/* confirm dialog */
+.ask{border:1px solid var(--line);border-radius:16px;background:var(--pearl);color:var(--ink);padding:22px 24px;width:min(460px, calc(100vw - 32px));box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.ask::backdrop{background:rgba(16,20,18,.45)}
+.ask h3{font-family:var(--display);font-size:22px;font-weight:600;margin:0 0 10px;line-height:1.2}
+.ask p{margin:0 0 10px;color:var(--muted);font-size:15px}
+.ask p b{color:var(--ink);font-weight:600}
+.askrow{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:16px}
+.btn.danger{background:var(--miss);color:var(--paper);border-color:var(--miss)}
+
 /* spaced review */
 .due-n{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 6px;margin-left:7px;border-radius:999px;background:var(--brass-deep);color:var(--paper);font-size:11.5px;font-weight:600;line-height:1;vertical-align:1px}
 .due-n[hidden]{display:none}
@@ -498,6 +507,13 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
     <div class="racts"><button class="btn" type="button" id="revSkip">Skip</button><button class="btn primary" type="button" id="revNext" hidden></button><button class="btn" type="button" id="revEnd">End review</button></div>
   </section>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <dialog class="ask" id="askDlg" aria-labelledby="askTitle">
+    <form method="dialog">
+      <h3 id="askTitle"></h3>
+      <div id="askBody"></div>
+      <div class="askrow"><button class="btn" value="cancel" id="askNo"></button><button class="btn primary" value="ok" id="askYes"></button></div>
+    </form>
+  </dialog>
   <div class="ctip" id="ctip" hidden></div>
 
   <main>
@@ -2868,7 +2884,7 @@ function initAct(){
     b.replaceWith(h);
   } else $("dataExport").onclick=()=>{
     actSave(true); const out={};
-    for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k.startsWith("bari:") && k!=="bari:dev" && k!=="bari:owner") out[k]=localStorage.getItem(k); }
+    for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k.startsWith("bari:") && !["bari:dev","bari:owner","bari:ownerEmail","bari:pushedSig"].includes(k)) out[k]=localStorage.getItem(k); }
     const a=document.createElement("a");
     a.href=URL.createObjectURL(new Blob([JSON.stringify({app:"bari-practice",v:1,at:new Date().toISOString(),data:out},null,1)],{type:"application/json"}));
     a.download=`bari-practice-${dkey(new Date())}.json`; document.body.appendChild(a); a.click(); a.remove();
@@ -2879,7 +2895,7 @@ function initAct(){
       if(j.app!=="bari-practice"||!j.data) throw 0;
       if(!confirm("Replace everything in this browser with the imported history?")) return;
       ACT.noSave=true;
-      Object.entries(j.data).forEach(([k,v])=>{ if(k.startsWith("bari:") && k!=="bari:dev" && k!=="bari:owner") localStorage.setItem(k,v); });
+      Object.entries(j.data).forEach(([k,v])=>{ if(k.startsWith("bari:") && !["bari:dev","bari:owner","bari:ownerEmail","bari:pushedSig"].includes(k)) localStorage.setItem(k,v); });
       location.reload();
     }).catch(()=>alert("That file isn't a Bari practice export."));
   };
@@ -2972,6 +2988,8 @@ function applyRemote(r){
 async function pushNow(){
   if(!SY.uid) return;
   clearTimeout(SY.pushT); SY.pushT=null;
+  if(ACT.saveT){ clearTimeout(ACT.saveT); ACT.saveT=null; store.set("days",ACT.days); }
+  const sig=localSig();
   const keys=[...SY.dirty]; SY.dirty.clear();
   const sendDays=SY.daysDirty; SY.daysDirty=false;
   const lt=tsGet(), patch={data:{},ts:{}};
@@ -2980,6 +2998,7 @@ async function pushNow(){
     if(Object.keys(patch.data).length){ patch.v=1; patch.updated=Date.now(); await CLOUD.pushUser(SY.uid,patch); }
     if(sendDays){ await CLOUD.pushDevice(SY.uid,DEV,{days:JSON.stringify(ACT.days),label:devLabel(),updated:Date.now()}); }
     SY.last=Date.now(); SY.state="ok"; SY.err="";
+    try{ localStorage.setItem("bari:pushedSig", sig); }catch(e){}
   }catch(e){ keys.forEach(k=>SY.dirty.add(k)); if(sendDays) SY.daysDirty=true; throw e; }
 }
 function schedulePush(){
@@ -2987,6 +3006,14 @@ function schedulePush(){
   SY.pushT=setTimeout(()=>{ SY.pushT=null; pushNow().then(paintAcct).catch(e=>{ SY.state="err"; SY.err=syncErrText(e); paintAcct(); }); }, 12000);
 }
 function syncTouch(k){ if(SY && SY.uid){ SY.dirty.add(k); schedulePush(); } }
+// A fingerprint of everything that syncs, taken whenever a push succeeds. If what's in the browser no longer
+// matches it, there's practice the cloud hasn't seen (say, a session that ended offline or after signing out).
+function localSig(){
+  let s=""; for(const k of [...SYNC_KEYS,"days"]) s+=k+"="+(localStorage.getItem("bari:"+k)||"")+"\n";
+  let h=5381; for(let i=0;i<s.length;i++) h=((h<<5)+h+s.charCodeAt(i))|0;
+  return (h>>>0).toString(36)+":"+s.length;
+}
+function unsyncedLocal(){ let p=null; try{ p=localStorage.getItem("bari:pushedSig"); }catch(e){} return p!==null && p!==localSig(); }
 function syncDays(){ if(SY && SY.uid){ SY.daysDirty=true; schedulePush(); } }
 async function syncNow(initial){
   if(!SY.uid || SY.busy) return;
@@ -3007,19 +3034,38 @@ function refreshViews(){
   if(!$("view-prog").hidden){ renderAct(); renderProf(); }
   paintDue();
 }
+function ask({title, body, ok, cancel, danger}){
+  return new Promise(res=>{
+    const d=$("askDlg");
+    $("askTitle").textContent=title; $("askBody").innerHTML=body;
+    $("askYes").textContent=ok; $("askNo").textContent=cancel;
+    $("askYes").className="btn "+(danger?"danger":"primary");
+    d.returnValue="";
+    d.onclose=()=>res(d.returnValue==="ok");
+    d.showModal(); $("askNo").focus();
+  });
+}
 function wipeLocal(){
   ACT.noSave=true;
-  [...SYNC_KEYS,"days","daysBackfilled","_ts","sess","dev","owner"].forEach(k=>{ try{ localStorage.removeItem("bari:"+k); }catch(e){} });
+  [...SYNC_KEYS,"days","daysBackfilled","_ts","sess","dev","owner","ownerEmail","pushedSig"].forEach(k=>{ try{ localStorage.removeItem("bari:"+k); }catch(e){} });
 }
 async function onUser(u){
   if(!u){ SY.uid=null; SY.state="out"; paintAcct(); return; }
   const owner=store.get("owner",null);
   if(owner && owner!==u.uid){
-    if(!confirm(`This browser holds another account's practice history. Replace it with the history for ${u.email}?`)){ await CLOUD.signOut(); return; }
-    wipeLocal(); store.set("owner",u.uid); location.reload(); return;
+    const prev=store.get("ownerEmail",null), who=prev?`<b>${escH(prev)}</b>`:"another account", next=`<b>${escH(u.email||"this account")}</b>`;
+    const ok = unsyncedLocal()
+      ? await ask({title:"Practice not saved yet", danger:true, ok:"Switch and lose it", cancel:"Don't switch",
+          body:`<p>This browser has practice for ${who} that hasn't reached the cloud yet, probably from a session that ended offline or after signing out. Switching to ${next} now would delete it.</p>
+                <p>To keep it, choose <b>Don't switch</b>, sign in as ${prev?escH(prev):"that account"} so it saves, then switch.</p>`})
+      : await ask({title:`Switch to ${u.email||"this account"}?`, ok:"Switch", cancel:"Don't switch",
+          body:`<p>This browser has the practice history for ${who}. It's saved in the cloud and comes back when you sign in with that account again.</p>
+                <p>Switching clears it from this browser and loads ${next}'s own history.</p>`});
+    if(!ok){ await CLOUD.signOut(); return; }
+    wipeLocal(); store.set("owner",u.uid); store.set("ownerEmail",u.email||""); location.reload(); return;
   }
   SY.first=!owner; SY.uid=u.uid; SY.email=u.email||"";
-  store.set("owner",u.uid);
+  store.set("owner",u.uid); store.set("ownerEmail",u.email||"");
   await syncNow(true);
 }
 function syncErrText(e){
@@ -3062,7 +3108,14 @@ function paintPanel(){
       <div class="row"><button class="btn" id="syNow">Sync now</button><button class="btn" id="syOut">Sign out</button></div>`
     : `<p>${SY.err||"Sign in to sync your history."}</p><div class="row"><button class="btn" id="syIn">Try again</button></div>`;
   if($("syNow")) $("syNow").onclick=()=>syncNow();
-  if($("syOut")) $("syOut").onclick=async()=>{ try{ await pushNow(); }catch(e){} await CLOUD.signOut(); p.hidden=true; toast("Signed out. Your history stays on this device."); };
+  if($("syOut")) $("syOut").onclick=async()=>{
+    let saved=true; try{ await pushNow(); }catch(e){ saved=false; SY.state="err"; SY.err=syncErrText(e); paintAcct(); }
+    if(!saved && !(await ask({title:"Your latest practice isn't in the cloud yet", ok:"Sign out anyway", cancel:"Stay signed in",
+        body:`<p>The app couldn't reach the cloud just now, so practice since ${agoS(SY.last)} is only on this device.</p>
+              <p>If you sign out, it stays here and saves the next time you sign in as ${escH(SY.email)}. If someone else signs in on this device first, the app will warn before it's lost.</p>`}))) return;
+    await CLOUD.signOut(); p.hidden=true;
+    toast(saved ? "Signed out. Your history is saved and stays on this device." : "Signed out. Your latest practice stays on this device until you sign back in.");
+  };
   if($("syIn")) $("syIn").onclick=()=>{ p.hidden=true; acctClick(); };
 }
 async function acctClick(){

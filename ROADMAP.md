@@ -8,6 +8,10 @@ A running list of what's planned. Items move to the release notes when they ship
 
 ## Shipped
 
+- **v1.4.1** — Switching accounts in one browser now explains what happens
+  (the other account's history is safe in the cloud) with Switch / Don't switch
+  buttons, and warns before switching would lose practice that never reached
+  the cloud. Signing out warns if the latest practice couldn't be saved.
 - **v1.4** — Spaced review: each scale, arpeggio and note gets its own review
   gap that grows with clean runs and resets after rough ones. Due today on the
   Progress tab, due counts on the tabs, Start review (scales with the mic, then

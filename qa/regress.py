@@ -743,8 +743,51 @@ def _(env):
     out["panel"] = re.sub(r"\d+\s*(s|sec|min|seconds?|minutes?) ago|just now", "<t>", A.text_content("#acctPanel").strip().replace("\n", " "))[:140]
     A.evaluate("()=>CLOUD.signOut()"); A.wait_for_timeout(300)
     A.evaluate('()=>{ window.__nextUser={uid:"u2",email:"other@example.com"}; }')
-    A.click("#acctBtn"); A.wait_for_timeout(1600)
-    out["switch_account"] = [A.evaluate(TOT), A.evaluate('()=>store.get("owner")'), len(env.dialogs) > 0]
+    A.click("#acctBtn"); A.wait_for_timeout(900)
+    asked = len(env.dialogs) > 0
+    if A.evaluate('()=>!!document.querySelector("#askDlg[open]")'):      # v1.4.1+: the app's own dialog
+        asked = True; A.click("#askYes")
+    A.wait_for_timeout(1200)
+    out["switch_account"] = [A.evaluate(TOT), A.evaluate('()=>store.get("owner")'), asked]
+    return out
+
+@check("sync.switch_prompt")
+def _(env):
+    """Switching accounts in one browser: what the dialog says, Don't switch, the unsaved-practice warning, and Sign out while offline."""
+    srv = Server(); pg = env.page(firebase="fake", server=srv); pg.wait_for_timeout(1200)
+    if not E(pg, '!!document.getElementById("askDlg")'): return "n/a"
+    out = {}
+    dlg = lambda: E(pg, '()=>[$("askTitle").textContent, $("askBody").innerText.replace(/\s+/g," ").trim(), $("askNo").textContent, $("askYes").textContent, $("askYes").className]')
+    pg.click("#acctBtn"); pg.wait_for_timeout(900)                       # player@example.com, uid u1
+    E(pg, '()=>{ logPractice("note:62","D4","notes",1,1); }'); E(pg, "()=>pushNow()"); pg.wait_for_timeout(300)
+    out["after_push"] = E(pg, '()=>[store.get("ownerEmail"), unsyncedLocal()]')
+    pg.click("#acctBtn"); pg.click("#syOut"); pg.wait_for_timeout(500)
+    out["signed_out"] = [E(pg, '$("toast").textContent'), E(pg, "unsyncedLocal()")]
+    E(pg, '()=>{ window.__nextUser={uid:"u2",email:"second@example.com"}; }')
+    pg.click("#acctBtn"); pg.wait_for_timeout(900)
+    out["switch_dialog"] = dlg()
+    pg.click("#askNo"); pg.wait_for_timeout(500)
+    out["dont_switch"] = [E(pg, '()=>store.get("owner")'), E(pg, '$("acctBtn").textContent.trim()'), E(pg, '()=>Object.keys(PROF).length')]
+    E(pg, '()=>{ logPractice("note:64","E4","notes",1,1); }')              # practice while signed out: not in the cloud
+    out["unsynced_after_practice"] = E(pg, "unsyncedLocal()")
+    pg.click("#acctBtn"); pg.wait_for_timeout(900)
+    out["warning_dialog"] = dlg()
+    pg.click("#askNo"); pg.wait_for_timeout(500)
+    E(pg, '()=>{ window.__nextUser={uid:"u1",email:"player@example.com"}; }')
+    pg.click("#acctBtn"); pg.wait_for_timeout(1200)                      # same account: no dialog, the practice saves
+    out["back_as_owner"] = [E(pg, '!!document.querySelector("#askDlg[open]")'), E(pg, "unsyncedLocal()"),
+                            "note:64" in json.loads(srv.docs.get("users/u1", {}).get("data", {}).get("prof", "{}"))]
+    E(pg, '()=>{ CLOUD.pushUser=()=>Promise.reject(Object.assign(new Error("offline"),{code:"unavailable"})); logPractice("note:65","F4","notes",1,1); }')
+    pg.click("#acctBtn"); pg.click("#syOut"); pg.wait_for_timeout(600)
+    out["offline_sign_out"] = dlg()
+    pg.click("#askNo"); pg.wait_for_timeout(300)
+    out["stay_signed_in"] = E(pg, '()=>[SY.uid, $("acctBtn").textContent.trim()]')
+    pg.click("#acctBtn"); pg.click("#syOut"); pg.wait_for_timeout(600); pg.click("#askYes"); pg.wait_for_timeout(500)
+    out["signed_out_anyway"] = [E(pg, '()=>SY.uid'), E(pg, '$("toast").textContent'), E(pg, "unsyncedLocal()")]
+    E(pg, '()=>{ window.__nextUser={uid:"u2",email:"second@example.com"}; }')
+    pg.click("#acctBtn"); pg.wait_for_timeout(900); pg.click("#askYes"); pg.wait_for_timeout(1500)
+    out["switched"] = [E(pg, '()=>store.get("owner")'), E(pg, '()=>store.get("ownerEmail")'), E(pg, '()=>Object.keys(PROF).length')]
+    env.shot(pg, "switch_dialog")
     return out
 
 @check("sync.failure_paths")

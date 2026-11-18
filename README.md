@@ -91,8 +91,14 @@ in, history follows you to every device you sign in on:
 - Proficiency keeps the most recent reading per item, plus the best score from
   any device. Achievements earned anywhere count everywhere. Settings such as the
   weekly goal keep the most recent change.
-- Signing out keeps your history on that device. Signing in to a browser that
-  holds a different account's history asks before replacing it.
+- Signing out saves your latest practice to the cloud first and keeps your
+  history on that device. If the cloud can't be reached, it says so and lets you
+  stay signed in.
+- Each browser holds one account's history at a time. Signing in with a
+  different account asks before switching: the first account's history is safe
+  in the cloud and comes back when it signs in again. If the browser has
+  practice that never reached the cloud (a session that ended offline or after
+  signing out), it warns that switching would lose it.
 
 Data lives in Firestore under `users/{uid}`, with one document per device under
 `users/{uid}/devices/`. The Firestore security rules only let a signed-in user

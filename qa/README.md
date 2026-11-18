@@ -61,7 +61,8 @@ and screenshots of each tab, desktop and phone width, to
   timer, export and import.
 - **Sign-in and sync**: two devices syncing through a fake Firestore (no
   double counting, newest settings win, best scores kept), switching
-  accounts, Firebase failing to load, the sign-in popup being closed,
+  accounts (the dialog, Don't switch, the unsaved-practice warning, signing
+  out while offline), Firebase failing to load, the sign-in popup being closed,
   signing back in, and the embedded preview hiding sign-in and export.
 
 Sign-in and sync run against the stand-in modules in `fake-firebase/`, so
