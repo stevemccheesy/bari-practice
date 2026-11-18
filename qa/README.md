@@ -50,6 +50,11 @@ and screenshots of each tab, desktop and phone width, to
   editor's paste), the parser's error message, reset and delete, and the staff
   editor itself (click to place, lengths, accidentals, rests, drag, keys,
   undo, play, save).
+- **Spaced review**: the gap rules (clean, slips, rough, late, early, same day,
+  the cap), the Due today list, tab counts, the Next review column, Due soonest,
+  the Practise shortcuts, and a whole review session (two scales with the mic,
+  a skip, the due-notes deck, the summary, the practice timer, settings put
+  back afterwards). Also where each left pinky key sits in the diagram.
 - **Progress**: proficiency maths and decay, the proficiency list in every
   sort order, practice log day/week/4-week/year views and navigation,
   streaks and the weekly goal, achievements, manual entry, the practice

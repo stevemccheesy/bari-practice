@@ -45,13 +45,23 @@ flat, drag it to change pitch. Bars fill themselves, and there's undo and
 play-from-here. Pieces can also be pasted in a compact text notation
 (`G4:1 Bb4:0.5 B4:0.5 D5:2`, one bar per line).
 
+**Spaced review** — every scale, arpeggio and note you practise gets its own
+review gap, based on the spacing effect (Ebbinghaus's forgetting curve; Cepeda
+et al., 2008). A clean go stretches the gap (about 1 → 3 → 7 → 16 → 35 days), a
+shakier one stretches it less, and a rough one brings it back tomorrow. The
+Progress tab opens with what's **Due today**, the tabs show how many are due,
+and **Start review** steps through them: each scale loads with the mic on, then
+the due notes come up as one short flashcard deck, and a summary shows how each
+gap changed. Review time runs the practice timer. Pieces aren't scheduled.
+
 **Progress** — a weekly goal (days per week, and how many minutes make a day
 count), day and week streaks, achievements, and a practice log with day, week,
 four-week and year views. Playing time is counted from the microphone, from the
 Start practice timer in the header, or entered by hand. Below that, proficiency
 per scale, piece and individual note: a weighted running average of your mic
 sessions, held back until you have a few reps and faded for time since you last
-practised, with your all-time best alongside.
+practised (more slowly for things with a long review gap), with your all-time
+best alongside, and when each one is next due.
 
 ## Microphone
 

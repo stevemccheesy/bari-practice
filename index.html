@@ -216,7 +216,7 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
 .pgroup{margin-bottom:26px}
 .pgroup h3{font-family:var(--display);font-size:20px;font-weight:600;margin:0 0 3px;font-variation-settings:"opsz" 72}
 .pgroup p.sub{margin:0 0 12px;color:var(--muted);font-size:13.5px}
-.prow{display:grid;grid-template-columns:minmax(130px,1.4fr) 128px minmax(90px,1.6fr) 44px minmax(120px,0.9fr);
+.prow{display:grid;grid-template-columns:minmax(130px,1.4fr) 128px minmax(90px,1.6fr) 44px minmax(120px,0.9fr) minmax(96px,0.6fr);
   gap:14px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line);font-size:14px}
 .prow:last-child{border-bottom:0}
 .prow:nth-child(odd){background:var(--panel)}
@@ -247,7 +247,65 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
 .pempty h3{font-family:var(--display);font-size:20px;margin:0 0 6px}
 .pempty p{margin:0;max-width:66ch;font-size:14.5px}
 @media (max-width:760px){ .prow{grid-template-columns:1fr auto;gap:6px 12px}
-  .prow .pbar{grid-column:1/-1} .pmeta{grid-column:1/-1} }
+  .prow .pbar{grid-column:1/-1} .pmeta{grid-column:1/-1} .pnext{grid-column:1/-1} .pnext:empty{display:none} }
+
+/* spaced review */
+.due-n{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 6px;margin-left:7px;border-radius:999px;background:var(--brass-deep);color:var(--paper);font-size:11.5px;font-weight:600;line-height:1;vertical-align:1px}
+.due-n[hidden]{display:none}
+.rbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;background:var(--pearl);border:1.5px solid var(--brass);border-radius:14px;padding:12px 16px;margin:0 0 16px}
+.rbar[hidden]{display:none}
+.rbar .eyebrow{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--brass-deep)}
+.rbar .rtitle{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-family:var(--display);font-size:22px;font-weight:600;line-height:1.2}
+.rsteps{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0;padding:0;flex:1 1 300px}
+.rsteps li{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:13px;color:var(--muted);background:var(--panel)}
+.rsteps li.cur{border-color:var(--ink);color:var(--ink);font-weight:600;background:var(--pearl)}
+.rsteps li.done{color:var(--good);border-color:var(--good)}
+.rsteps svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+.racts{display:flex;gap:8px;flex-wrap:wrap}
+.racts .btn[hidden]{display:none}
+.rtag{display:inline-block;border-radius:999px;padding:2px 9px;font:600 12.5px var(--body);white-space:nowrap}
+.rtag.due{background:var(--brass-wash);color:var(--brass-deep)}
+.rtag.late{background:color-mix(in srgb, var(--miss) 14%, transparent);color:var(--miss)}
+.duecard{background:var(--pearl);border:1.5px solid var(--brass);border-radius:14px;padding:18px 20px;margin-bottom:18px}
+.duecard[hidden]{display:none}
+.duecard.quiet{background:var(--panel);border:1px solid var(--line);padding:14px 20px}
+.duecard.quiet h3{font-size:19px}
+.duecard.done{border-color:var(--good)}
+.duecard h3{font-family:var(--display);font-size:24px;font-weight:600;margin:0;display:flex;align-items:center;gap:10px;font-variation-settings:"opsz" 72}
+.duecard .sub{margin:4px 0 0;color:var(--muted);font-size:14.5px}
+.duecard .sub b{color:var(--ink)}
+.duehead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px 24px}
+.btn.big{padding:12px 20px;font-size:16px;border-radius:12px}
+.duegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:16px}
+.duecol{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.duecol h4{margin:0;font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.duerow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.duerow b{display:block;font-weight:500}
+.duerow small,.duecol small{display:block;color:var(--muted);font-size:13px}
+.dright{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.notechips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.nchip{border:1px solid var(--line);background:var(--pearl);border-radius:8px;padding:3px 9px;font-weight:600;font-variant-numeric:tabular-nums}
+.duefoot{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;margin-top:14px;font-size:13.5px;color:var(--muted)}
+.duefoot b{color:var(--ink);font-weight:600}
+.reswrap{overflow-x:auto}
+.res{width:100%;border-collapse:collapse;margin-top:14px;font-size:14.5px}
+.res th{text-align:left;font-size:12.5px;font-weight:500;color:var(--muted);padding:4px 12px;border-bottom:1px solid var(--line)}
+.res td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.res tr:nth-child(even) td{background:var(--panel)}
+.res td.name{font-weight:500}
+.res .kind{display:block;color:var(--muted);font-size:12.5px;font-weight:400}
+.res .ok,.res .up{color:var(--good);font-weight:600}
+.res .meh{color:var(--brass-deep);font-weight:600}
+.res .bad,.res .down{color:var(--miss);font-weight:600}
+.res .gap{white-space:nowrap}
+.res .was{color:var(--muted)}
+.pnext{font-size:13px;color:var(--muted)}
+.pnext.due{color:var(--brass-deep);font-weight:600}
+.pnext.late{color:var(--miss);font-weight:600}
+.ntile .ndue{display:block;font-size:11.5px;color:var(--muted);margin-top:5px}
+.ntile .ndue.due{color:var(--brass-deep);font-weight:600}
+.ntile .ndue.late{color:var(--miss);font-weight:600}
+.tile.hl{border-color:var(--brass)}
 
 /* activity */
 .topr{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -427,13 +485,18 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
       <button class="btn sess" id="sessBtn" aria-live="polite"></button>
     </div>
     <nav class="tabs" role="tablist" aria-label="Practice mode">
-      <button role="tab" id="tab-scales" aria-selected="true" aria-controls="view-scales">Scales &amp; arpeggios</button>
-      <button role="tab" id="tab-cards" aria-selected="false" aria-controls="view-cards">Note flashcards</button>
+      <button role="tab" id="tab-scales" aria-selected="true" aria-controls="view-scales">Scales &amp; arpeggios<span class="due-n" id="dueScales" hidden></span></button>
+      <button role="tab" id="tab-cards" aria-selected="false" aria-controls="view-cards">Note flashcards<span class="due-n" id="dueCards" hidden></span></button>
       <button role="tab" id="tab-songs" aria-selected="false" aria-controls="view-songs">Songs</button>
       <button role="tab" id="tab-prog" aria-selected="false" aria-controls="view-prog">Progress</button>
     </nav>
     </div>
   </header>
+  <section class="rbar" id="revBar" aria-label="Review in progress" hidden>
+    <div><div class="eyebrow" id="revCount"></div><div class="rtitle" id="revTitle"></div></div>
+    <ol class="rsteps" id="revSteps" aria-label="Review steps"></ol>
+    <div class="racts"><button class="btn" type="button" id="revSkip">Skip</button><button class="btn primary" type="button" id="revNext" hidden></button><button class="btn" type="button" id="revEnd">End review</button></div>
+  </section>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
   <div class="ctip" id="ctip" hidden></div>
 
@@ -531,7 +594,7 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
       <label class="field">Notes per card
         <select id="cGroup"><option value="1">One</option><option value="2">Two</option><option value="3">Three</option></select>
       </label>
-      <div class="field">Register
+      <div class="field" id="cRegWrap">Register
         <div class="toggles">
           <label class="chip"><input type="checkbox" class="rng" value="low" checked>Low notes</label>
           <label class="chip"><input type="checkbox" class="rng" value="mid" checked>Octave key notes</label>
@@ -625,6 +688,7 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
     </div>
   </section>
   <section id="view-prog" role="tabpanel" aria-labelledby="tab-prog" hidden>
+    <section class="duecard" id="dueCard" aria-live="polite" hidden></section>
     <div class="goalcard" id="goalCard"></div>
 
     <div class="block actblock">
@@ -667,6 +731,7 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
     <div class="songtop" style="margin:18px 0 8px">
       <label class="field">Order <select id="profSort">
         <option value="weak">Needs work first</option>
+        <option value="due">Due soonest</option>
         <option value="strong">Strongest first</option>
         <option value="reps">Most practised</option>
         <option value="recent">Most recent</option>
@@ -675,7 +740,7 @@ textarea{width:100%;background:var(--pearl);border:1px solid var(--line);border-
       <label class="btn" style="cursor:pointer">Import<input type="file" id="dataImport" accept="application/json,.json" hidden></label>
     </div>
     <p class="hint" id="syncHint" style="max-width:76ch;margin:-2px 0 10px"></p>
-    <p class="hint" style="max-width:76ch;margin-bottom:18px">Each score is a running average of your mic sessions, weighted by how much each one covered and held back until you have a few reps. It fades slowly once you stop practising something, so the number is how well you would play it <em>today</em>. Best is your high-water mark, marked on each bar.</p>
+    <p class="hint" style="max-width:76ch;margin-bottom:18px">Each score is a running average of your mic sessions, weighted by how much each one covered and held back until you have a few reps. It fades slowly once you stop practising something, so the number is how well you would play it <em>today</em>. Best is your high-water mark, marked on each bar. Next review is when a scale or note comes due again: a clean go pushes it further out, a rough one brings it back tomorrow.</p>
     <div id="profBody"></div>
   </section>
   </main>
@@ -798,10 +863,10 @@ function fingSVG(keys, height){
     <text class="klab out" x="122" y="186">bis</text>
     ${circ("L2",112,218,21,"2")}
     ${circ("L3",112,270,21,"3")}
-    ${pill("gs",58,254,32,15,"G♯")}
-    ${pill("lb",42,282,24,14,"B")}
-    ${pill("lbb",42,306,24,14,"B♭")}
-    ${pill("lcs",72,294,20,34,"C♯")}
+    ${pill("gs",60,252,36,15,"G♯")}
+    ${pill("lcs",44,276,24,15,"C♯")}
+    ${pill("lb",75,276,24,15,"B")}
+    ${pill("lbb",60,300,44,15,"B♭")}
     ${pill("sideE",164,334,13,24,"E",true)}
     ${pill("sideC",164,362,13,24,"C",true)}
     ${pill("sideBb",164,390,13,24,"B♭",true)}
@@ -1084,7 +1149,10 @@ function sclFinish(){
   SM.done=true;
   const ok=S.res.filter(r=>r==="ok").length, n=S.seq.length, loop=sclLoop();
   sclUI(ok===n?"ok":"wrong", `${runTag()}${ok} of ${n} right. ${ok===n?"Clean run.":"The red notes are the ones to go back to."}${loop?" Next run in a moment.":""}`);
-  logPractice("scale:"+$("sType").value+":"+$("sKey").value, sclName(), "scales", ok, n);
+  const sid="scale:"+$("sType").value+":"+$("sKey").value;
+  logPractice(sid, sclName(), "scales", ok, n);
+  const revMsg=revScaleDone(sid, ok, n);
+  if(revMsg) $("sclMsg").textContent=`${ok} of ${n} right. ${ok===n?"Clean run.":"The red notes are the ones to go back to."}${revMsg}`;
   $("sclHear").textContent="";
   if(loop){ clearTimeout(SM.loopT); SM.loopT=setTimeout(sclNextRun, 1800); }
 }
@@ -1158,6 +1226,7 @@ function keyLabel(pc){
 }
 function pool(){
   const rs=[...document.querySelectorAll(".rng:checked")].map(i=>i.value), key=$("cKey").value, acc=$("cAcc").checked, out=[];
+  if(key==="due") return dueNoteObjs();
   const map = key==="all" ? null : keyMap(+key);
   rs.forEach(r=>{ const [lo,hi]=RANGES[r]; for(let m=lo;m<=hi;m++){
     if(map){ const sp=map[m%12]; if(!sp) continue; const [l,a]=sp; out.push(mk(l, Math.round((m-NAT[l]-a)/12)-1, a)); }
@@ -1181,6 +1250,7 @@ function weighted(arr){
   return arr[k];
 }
 function pickGroup(){
+  if(revNotesActive()) return REV.di<REV.deck.length ? [spellMidi(REV.deck[REV.di],"sharp")] : [];
   const p=pool(); if(!p.length) return [];
   const n=Math.max(1,Math.min(3,+$("cGroup").value||1));
   const first=weighted(p.length>2 ? p.filter(x=>x.m!==C.prevM) : p);
@@ -1195,6 +1265,7 @@ function pickGroup(){
   return out;
 }
 function pickNext(){
+  if(revNotesActive() && REV.di>=REV.deck.length){ revNotesDone(); return; }
   const prevCardM=C.g.length?C.g[C.g.length-1].m:null;
   const g=pickGroup();
   if(!g.length){ C.g=[]; renderCard(); return; }
@@ -1209,7 +1280,7 @@ function renderCard(){
   const g=C.g, n1=g.length===1;
   ["Staff","Name","Fing"].forEach(F=>$("face"+F).classList.remove("front"));
   if(!g.length){
-    $("faceStaff").innerHTML=`<p class="q">No notes match. Pick another register or key above.</p>`; $("faceName").innerHTML=""; $("faceFing").innerHTML="";
+    $("faceStaff").innerHTML=`<p class="q">${$("cKey").value==="due"?"No notes are due for review right now.":"No notes match. Pick another register or key above."}</p>`; $("faceName").innerHTML=""; $("faceFing").innerHTML="";
     ["reveal","got","miss"].forEach(id=>$(id).disabled=true); return;
   }
   const show = f => C.revealed || C.faces.has(f);
@@ -1253,6 +1324,7 @@ function grade(ok){
     else stats.miss[m]=(stats.miss[m]||0)+1;
     logPractice("note:"+m, noteName(m,"sharp"), "notes", ok?1:0, 1);
   });
+  revCardAnswered(ok);
   store.set("stats",stats); renderScore(); pickNext();
 }
 function renderScore(){
@@ -1265,9 +1337,10 @@ function renderScore(){
 }
 function saveCards(){ store.set("cards",{faces:chosenFaces(),mix:$("cMix").checked,key:$("cKey").value,group:$("cGroup").value,
   ranges:[...document.querySelectorAll(".rng:checked")].map(i=>i.value),acc:$("cAcc").checked,sound:$("cSound").checked}); }
-function syncKeyUI(){ $("cAccWrap").style.display = $("cKey").value==="all" ? "" : "none"; }
+function syncKeyUI(){ $("cAccWrap").style.display = $("cKey").value==="all" ? "" : "none";
+  $("cRegWrap").style.display = $("cKey").value==="due" ? "none" : ""; }
 function initCards(){
-  $("cKey").innerHTML = `<option value="all">All notes</option>` + KEY_ORDER.map(pc=>`<option value="${pc}">${keyLabel(pc)}</option>`).join("");
+  $("cKey").innerHTML = `<option value="all">All notes</option><option value="due">Due for review</option>` + KEY_ORDER.map(pc=>`<option value="${pc}">${keyLabel(pc)}</option>`).join("");
   $("cKey").value = String(cs.key); if(!$("cKey").value) $("cKey").value="all";
   document.querySelectorAll(".face-opt").forEach(i=>i.checked=cs.faces.includes(i.value));
   if(!chosenFaces().length) document.querySelector('.face-opt[value="staff"]').checked=true;
@@ -1426,6 +1499,7 @@ function micSuccess(){
     if(clean && stats.miss[m]){ stats.miss[m]--; if(!stats.miss[m]) delete stats.miss[m]; }
     logPractice("note:"+m, noteName(m,"sharp"), "notes", clean?1:0, 1);
   });
+  revCardAnswered(clean);
   store.set("stats",stats); renderScore();
   C.revealed=true; renderCard();
   listenUI("ok", clean ? "Correct. Next card coming up." : "There it is. Next card coming up.");
@@ -2226,6 +2300,7 @@ function logPractice(id,label,cat,correct,total){
   const a=100*correct/total;
   const d=PROF[id]||{label,cat,score:0,best:0,reps:0,tries:0,hits:0,last:0};
   d.label=label; d.cat=cat;
+  if(reviewable(id)){ const now=Date.now(); d.ivl=nextGap(d.reps?sched(d).ivl:0, d.last, correct/total, now); d.due=dayStart(now)+d.ivl*DAY; }
   const w = total>=5 ? 0.35 : total>=3 ? 0.25 : 0.12;
   d.score = d.reps ? d.score*(1-w)+a*w : a;
   d.reps++; d.tries+=total; d.hits+=correct; d.last=Date.now();
@@ -2233,11 +2308,14 @@ function logPractice(id,label,cat,correct,total){
   d.best=Math.max(d.best||0, d.score*conf);
   PROF[id]=d; store.set("prof",PROF); addRun(); actCheck();
   if(!$("view-prog").hidden) renderProf();
+  paintDue();
 }
 function profNow(d){
   const days=(Date.now()-d.last)/DAY;
   const conf=Math.min(1,0.55+d.reps*0.15);
-  const fresh=Math.max(0.45,Math.min(1,1-Math.max(0,days-5)/120));
+  // things with a long review gap have proved they stick, so they fade later and more slowly
+  const g=d.ivl||0, grace=Math.max(5,g), slow=Math.min(4,Math.max(1,g/5));
+  const fresh=Math.max(0.45,Math.min(1,1-Math.max(0,days-grace)/(120*slow)));
   return {now:Math.round(d.score*conf*fresh), best:Math.round(d.best||0), days};
 }
 function ago(days){
@@ -2257,18 +2335,21 @@ function sortRows(rows){
   const c=(a,b)=> k==="strong" ? b.p.now-a.p.now
     : k==="reps" ? b.d.reps-a.d.reps
     : k==="recent" ? a.p.days-b.p.days
+    : k==="due" ? (a.s?a.s.due:Infinity)-(b.s?b.s.due:Infinity) || a.p.now-b.p.now
     : a.p.now-b.p.now;
   return rows.sort(c);
 }
 function renderProf(){
-  const all=Object.entries(PROF).map(([id,d])=>({id,d,p:profNow(d)}));
+  const today=dayStart(Date.now());
+  const all=Object.entries(PROF).map(([id,d])=>{ const s=reviewable(id)?sched(d):null;
+    return {id,d,p:profNow(d),s,x:s?{late:Math.round((today-s.due)/DAY)}:null}; });
   const tot=all.length, reps=all.reduce((a,x)=>a+x.d.reps,0);
   const avg=tot?Math.round(all.reduce((a,x)=>a+x.p.now,0)/tot):0;
   const strong=all.filter(x=>x.p.now>=85).length;
-  const rusty=all.filter(x=>x.p.days>14 && x.d.reps>=2).length;
+  const dueN=all.filter(x=>x.x && x.x.late>=0).length;
   $("profTiles").innerHTML = tot ? [
-    [tot,"things practised"],[reps,"practice runs"],[avg,"average right now"],[strong,"at strong"],[rusty,"going rusty"]
-  ].map(([v,l])=>`<div class="tile"><b>${v}</b><span>${l}</span></div>`).join("") : "";
+    [tot,"things practised"],[reps,"practice runs"],[avg,"average right now"],[strong,"at strong"],[dueN,"due for review today",dueN?" hl":""]
+  ].map(([v,l,c])=>`<div class="tile${c||""}"><b>${v}</b><span>${l}</span></div>`).join("") : "";
   if(!tot){
     $("profBody").innerHTML=`<div class="pempty"><h3>Nothing logged yet</h3>
       <p>Turn on <b>Listen with mic</b> on the scales tab and play a scale through, grade a few flashcards, or run <b>Listen and score</b> on a piece. Every one of those writes a score here, and it builds up over time so you can see what is solid and what has gone rusty.</p></div>`;
@@ -2278,23 +2359,220 @@ function renderProf(){
     const rows=sortRows(all.filter(x=>x.d.cat===cat));
     if(!rows.length) return "";
     if(cat==="notes") return `<div class="pgroup"><h3>${title}</h3><p class="sub">${sub} ${rows.length} notes logged.</p>
-      <div class="ntiles">${rows.map(({d,p})=>{const b=band(p.now);
+      <div class="ntiles">${rows.map(({d,p,x})=>{const b=band(p.now);
         return `<div class="ntile" title="${b[1]} \u00b7 best ${p.best} \u00b7 ${d.reps} reps \u00b7 ${ago(p.days)}">
-          <span class="nt1"><b>${d.label}</b><em>${p.now}</em></span>${barHTML(p.now,p.best,b[2])}</div>`}).join("")}</div></div>`;
+          <span class="nt1"><b>${d.label}</b><em>${p.now}</em></span>${barHTML(p.now,p.best,b[2])}${x?`<small class="ndue ${nextCls(x)}">${nextText(x)}</small>`:""}</div>`}).join("")}</div></div>`;
     return `<div class="pgroup"><h3>${title}</h3><p class="sub">${sub}</p>
-      ${rows.map(({d,p})=>{const b=band(p.now);
+      ${rows.map(({d,p,x})=>{const b=band(p.now);
         return `<div class="prow">
           <span class="pname">${d.label}</span>
           <span class="plevel"><i class="dot ${b[2]}"></i>${b[1]}</span>
           ${barHTML(p.now,p.best,b[2])}
           <span class="pval">${p.now}</span>
           <span class="pmeta">${d.reps} run${d.reps>1?"s":""} \u00b7 best ${p.best} \u00b7 ${ago(p.days)}</span>
+          <span class="pnext ${x?nextCls(x):""}">${x?(x.late<0?"Next review "+nextText(x).toLowerCase():nextText(x)):""}</span>
         </div>`}).join("")}</div>`;
   }).join("");
 }
 function initProf(){
   $("profSort").onchange=renderProf;
   renderProf();
+}
+
+/* ================= SPACED REVIEW ================= */
+// Every scale, arpeggio and note gets its own gap, in whole days, until it's next due. A clean go stretches the
+// gap (about 1 → 3 → 7 → 16 → 35 days), a shakier one stretches it less, and a rough one (under half right) brings
+// it back tomorrow. Practising before it's due earns less; coming back late but still clean earns credit for the
+// extra time, up to double. Pieces aren't scheduled.
+const REVIEW_MAX_SCALES=5, REVIEW_MAX_NOTES=12;
+const dayStart = t => { const d=new Date(t); d.setHours(0,0,0,0); return d.getTime(); };
+const reviewable = id => id.startsWith("scale:") || id.startsWith("note:");
+const escH = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+function nextGap(prev, last, q, now){
+  if(!prev || q<0.5) return 1;
+  const t=Math.max(0, Math.round((dayStart(now)-dayStart(last||now))/DAY));
+  const grow=1+1.3*Math.pow((q-0.5)/0.5, 2);                 // 2.3x clean, about 1.5x at 80%, none at 50%
+  const early=Math.min(1, t/prev), base = t>prev ? Math.min(t, prev*2) : prev;
+  let ivl=base*(1+(grow-1)*early);
+  if(q>=0.95 && early>=1) ivl=Math.max(ivl, prev+2);
+  return Math.min(180, Math.max(1, Math.round(ivl)));
+}
+function sched(d){
+  // stored schedule, or one estimated from history for things practised before reviews existed
+  if(d.ivl && d.due) return {ivl:d.ivl, due:d.due};
+  const v=profNow(d).now, ivl = v>=85?7 : v>=70?4 : v>=50?2 : 1;
+  return {ivl, due: dayStart(d.last||Date.now())+ivl*DAY, est:true};
+}
+function reviewList(){
+  const today=dayStart(Date.now());
+  return Object.entries(PROF).filter(([id])=>reviewable(id)).map(([id,d])=>{ const s=sched(d);
+    return {id, d, ivl:s.ivl, due:s.due, late:Math.round((today-s.due)/DAY), now:profNow(d).now}; });
+}
+function dueList(){
+  return reviewList().filter(x=>x.late>=0).sort((a,b)=> (b.late/b.ivl)-(a.late/a.ivl) || a.now-b.now);
+}
+const dueText = late => late>0 ? `${late} day${late>1?"s":""} overdue` : "Due today";
+const gapText = n => n<=1 ? "tomorrow" : `in ${n} days`;
+const nextText = x => x.late>0 ? dueText(x.late) : x.late===0 ? "Due today" : x.late===-1 ? "Tomorrow" : `In ${-x.late} days`;
+const nextCls = x => x.late>0 ? "late" : x.late===0 ? "due" : "";
+const shortLabel = s => s.replace(/ scale$/,"");
+const CHECK = `<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.5l2.5 2.5L10 3"/></svg>`;
+function dueNoteObjs(){ return dueList().filter(x=>x.id.startsWith("note:")).map(x=>spellMidi(+x.id.slice(5),"sharp")); }
+function paintDue(){
+  const due=dueList(), sc=due.filter(x=>x.id.startsWith("scale:")).length, nt=due.length-sc;
+  [["dueScales",sc],["dueCards",nt]].forEach(([id,n])=>{ const b=$(id); if(!b) return; b.textContent=n?String(n):""; b.hidden=!n; b.title=n?`${n} due for review`:""; });
+  const o=$("cKey") && $("cKey").querySelector('option[value="due"]'); if(o) o.textContent=`Due for review (${nt})`;
+  if(!$("view-prog").hidden) renderDue();
+}
+function comingUp(){
+  const up=reviewList().filter(x=>x.late<0).sort((a,b)=>a.due-b.due);
+  if(!up.length) return "";
+  const tom=up.filter(x=>x.late===-1), week=up.filter(x=>x.late<-1 && x.late>=-7).length;
+  const names=a=>{ const n=a.map(x=>x.d.label); return n.length<=2 ? n.join(" and ") : `${n.slice(0,2).join(", ")} and ${n.length-2} more`; };
+  if(tom.length) return `<b>Coming up</b> · ${escH(names(tom))} tomorrow${week?` · ${week} more this week`:""}`;
+  return `<b>Coming up</b> · ${escH(up[0].d.label)} ${nextText(up[0]).toLowerCase()}`;
+}
+function renderDue(){
+  const card=$("dueCard"); if(!card) return;
+  if(REV.summary){ card.hidden=false; card.className="duecard done"; card.innerHTML=summaryHTML(REV.summary); return; }
+  const all=reviewList();
+  if(!all.length){ card.hidden=true; card.innerHTML=""; return; }
+  const due=dueList(), sc=due.filter(x=>x.id.startsWith("scale:")), nt=due.filter(x=>x.id.startsWith("note:"));
+  card.hidden=false;
+  if(!due.length){
+    card.className="duecard quiet";
+    card.innerHTML=`<div class="duehead"><div><h3>Nothing due for review today</h3>
+      <p class="sub">Everything you've practised is inside its gap. ${comingUp()}</p></div></div>`;
+    return;
+  }
+  const take=Math.min(sc.length,REVIEW_MAX_SCALES)+Math.min(nt.length,REVIEW_MAX_NOTES);
+  const mins=Math.max(1, Math.min(sc.length,REVIEW_MAX_SCALES)*2 + Math.ceil(Math.min(nt.length,REVIEW_MAX_NOTES)*0.2));
+  const capped = take<due.length ? ` Start review takes the ${take} most overdue; the rest stay due for next time.` : "";
+  const row=x=>`<div class="duerow"><div><b>${escH(x.d.label)}</b><small>Played ${ago(profNow(x.d).days)} · ${band(x.now)[1].toLowerCase()}</small></div>
+      <div class="dright"><span class="rtag ${x.late>0?"late":"due"}">${dueText(x.late)}</span><button class="btn sm" type="button" data-scale="${x.id}">Practise</button></div></div>`;
+  card.className="duecard";
+  card.innerHTML=`<div class="duehead"><div><h3>Due today</h3>
+      <p class="sub">${due.length} thing${due.length>1?"s":""} to review, about ${mins} minute${mins>1?"s":""}. Catching them now keeps them from fading.${capped}</p></div>
+      <button class="btn primary big" type="button" id="revStart"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1l9 5-9 5z"/></svg>Start review</button></div>
+    <div class="duegrid">
+      ${sc.length?`<div class="duecol"><h4>Scales &amp; arpeggios</h4>${sc.slice(0,8).map(row).join("")}${sc.length>8?`<small>and ${sc.length-8} more</small>`:""}</div>`:""}
+      ${nt.length?`<div class="duecol"><h4>Notes</h4><div class="notechips">${nt.slice(0,24).map(x=>`<span class="nchip">${escH(x.d.label)}</span>`).join("")}${nt.length>24?`<small>+${nt.length-24}</small>`:""}</div>
+        <div class="duerow"><small>One short flashcard deck of just these.</small><button class="btn sm" type="button" data-notes="1">Practise</button></div></div>`:""}
+    </div>
+    <div class="duefoot"><span>${comingUp()}</span><span>A clean run stretches the gap (1 → 3 → 7 → 16 → 35 days). A rough one brings it back tomorrow.</span></div>`;
+}
+function summaryHTML(s){
+  const rows=s.res.map(r=>{
+    if(r.skipped) return `<tr><td class="name">${escH(r.label)}<span class="kind">${r.kind}</span></td><td>Skipped</td><td>—</td><td>Still due</td></tr>`;
+    const dir=r.after.ivl>r.before.ivl?"up":r.after.ivl<r.before.ivl?"down":"";
+    return `<tr><td class="name">${escH(r.label)}<span class="kind">${r.kind}</span></td><td><span class="${r.cls}">${escH(r.how)}</span></td>
+      <td>${r.before.score} → ${r.after.score}</td>
+      <td class="gap"><span class="was">${r.before.ivl} day${r.before.ivl>1?"s":""}</span> → <b class="${dir}">${r.after.ivl<=1?"tomorrow":r.after.ivl+" days"}</b></td></tr>`;
+  }).join("");
+  const left=dueList().length;
+  return `<h3><svg viewBox="0 0 26 26" width="24" height="24" aria-hidden="true"><circle cx="13" cy="13" r="12" fill="var(--good)"/><path d="M7.5 13.5l3.5 3.5 7.5-8" fill="none" stroke="var(--pearl)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Review done</h3>
+    <p class="sub">${s.steps} of ${s.total} done in ${fmtMin(s.mins)}.${s.timer?" The time is added to today.":""}</p>
+    ${rows?`<div class="reswrap"><table class="res"><thead><tr><th>What</th><th>How it went</th><th>Score</th><th>Gap until next review</th></tr></thead><tbody>${rows}</tbody></table></div>`:""}
+    <div class="duefoot"><span>${left?`<b>${left} still due.</b> They'll be first next time.`:"<b>Nothing else is due today.</b>"} ${comingUp().replace("<b>Coming up</b> · ","Next up: ")}</span>
+      <button class="btn primary" type="button" id="revClose">Close</button></div>`;
+}
+
+/* ---- the review session ---- */
+const REV={on:false,q:[],i:0,res:[],done:false,completed:0,timer:false,loop:false,prevKey:null,prevGroup:null,deck:[],di:0,miss:{},summary:null,t0:0};
+function snapItem(id){ const d=PROF[id]; return d?{score:profNow(d).now, ivl:sched(d).ivl}:{score:0,ivl:0}; }
+function loadScale(type,key){ $("sType").value=type; fillKeys(); $("sKey").value=key; fillStarts(); buildSeq(); }
+function practiseScale(id){ const [,type,key]=id.split(":"); setTab("scales"); stop(); loadScale(type,key); saveScales(); }
+function practiseNotes(){ setTab("cards"); $("cKey").value="due"; syncKeyUI(); saveCards(); pickNext(); }
+function startReview(){
+  const due=dueList(), sc=due.filter(x=>x.id.startsWith("scale:")).slice(0,REVIEW_MAX_SCALES), nt=due.filter(x=>x.id.startsWith("note:")).slice(0,REVIEW_MAX_NOTES);
+  const q=sc.map(x=>({kind:"scale", id:x.id, label:x.d.label, short:shortLabel(x.d.label), late:x.late, before:snapItem(x.id)}));
+  if(nt.length) q.push({kind:"notes", ids:nt.map(x=>x.id), label:"Notes due: "+nt.map(x=>x.d.label).join(", "),
+    short:`${nt.length} note${nt.length>1?"s":""}`, late:Math.max(...nt.map(x=>x.late)), before:Object.fromEntries(nt.map(x=>[x.id,snapItem(x.id)]))});
+  if(!q.length) return;
+  Object.assign(REV,{on:true,q,i:0,res:[],done:false,completed:0,summary:null,t0:Date.now(),loop:$("optLoop").checked,prevKey:null,prevGroup:null});
+  REV.timer=!ACT.sess; if(REV.timer) sessToggle();
+  $("optLoop").checked=false;          // one run per item; Loop comes back on afterwards if you had it
+  revGo();
+}
+function revGo(){
+  const st=REV.q[REV.i]; if(!st){ endReview(); return; }
+  REV.done=false; paintRev();
+  if(st.kind==="scale"){
+    const [,type,key]=st.id.split(":");
+    setTab("scales"); stop(); loadScale(type,key);
+    if(!SM.on){ $("optMic").checked=true; sclStart(); }
+  } else {
+    setTab("cards");
+    if(REV.prevKey===null){ REV.prevKey=$("cKey").value; REV.prevGroup=$("cGroup").value; }
+    $("cKey").value="due"; $("cGroup").value="1"; syncKeyUI();
+    REV.deck=st.ids.map(id=>+id.slice(5)); REV.di=0; REV.miss={};
+    pickNext();
+  }
+}
+function paintRev(){
+  const bar=$("revBar"); if(!bar) return;
+  if(!REV.on){ bar.hidden=true; return; }
+  const st=REV.q[REV.i], nx=REV.q[REV.i+1]; if(!st) return;
+  bar.hidden=false;
+  $("revCount").textContent=`Review · ${REV.i+1} of ${REV.q.length}`;
+  $("revTitle").innerHTML=`${escH(st.label)} <span class="rtag ${st.late>0?"late":"due"}">${dueText(st.late)}</span>`;
+  $("revSteps").innerHTML=REV.q.map((s,k)=>`<li class="${k<REV.i?"done":k===REV.i?"cur":""}">${k<REV.i?CHECK:`<b>${k+1}</b>`}${escH(s.short)}</li>`).join("");
+  $("revSkip").hidden=REV.done; $("revNext").hidden=!REV.done;
+  $("revNext").innerHTML = nx ? `Next: ${escH(nx.short)} <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1l6 5-6 5z"/></svg>` : "Finish review";
+}
+function revScaleDone(id, ok, n){             // called from sclFinish; returns text for the listening bar
+  const st=REV.q[REV.i];
+  if(!REV.on || REV.done || !st || st.kind!=="scale" || st.id!==id) return "";
+  const after=snapItem(id); REV.done=true; REV.completed++;
+  REV.res.push({kind:"Scale", label:st.label, how:`${ok} of ${n}${ok===n?", clean":""}`, cls: ok===n?"ok":ok/n>=0.8?"meh":"bad", before:st.before, after});
+  paintRev();
+  return ` Next review ${gapText(after.ivl)}.`;
+}
+const revNotesActive = () => REV.on && REV.q[REV.i] && REV.q[REV.i].kind==="notes" && !REV.done && $("cKey").value==="due";
+function revCardAnswered(ok){                 // called after a flashcard is graded (buttons or mic)
+  if(!revNotesActive()) return;
+  const st=REV.q[REV.i];
+  C.g.forEach(n=>{ const id="note:"+n.m; if(!(id in st.before)) return;
+    REV.res.push({kind:"Note", label:PROF[id]?PROF[id].label:noteName(n.m,"sharp"), how: ok?"Right first time":M.on?"Missed, then right":"Missed",
+      cls: ok?"ok":"bad", before:st.before[id], after:snapItem(id)}); });
+  REV.di++;
+}
+function revNotesDone(){
+  REV.done=true; REV.completed++; paintRev();
+  if(!REV.q[REV.i+1]) endReview();
+  else listenUI("ok","That was the last due note.");
+}
+function revNext(){ if(!REV.on) return; REV.i++; revGo(); }
+function revSkip(){
+  const st=REV.q[REV.i]; if(!REV.on||!st) return;
+  if(st.kind==="scale") REV.res.push({kind:"Scale", label:st.label, skipped:true});
+  else st.ids.slice(REV.di).forEach(id=>REV.res.push({kind:"Note", label:PROF[id]?PROF[id].label:id, skipped:true}));
+  REV.i++; revGo();
+}
+function endReview(){
+  if(!REV.on) return;
+  REV.on=false;
+  $("optLoop").checked=REV.loop;
+  if(REV.prevKey!==null){ $("cKey").value=REV.prevKey; $("cGroup").value=REV.prevGroup; syncKeyUI(); C.g=[]; }
+  const mins=(Date.now()-REV.t0)/60000;
+  const logged = REV.timer && ACT.sess && mins>=0.25;
+  if(REV.timer && ACT.sess) sessToggle();
+  REV.summary={res:REV.res.slice(), mins, total:REV.q.length, steps:REV.completed, timer:logged};
+  paintRev(); setTab("prog"); window.scrollTo(0,0);
+  if(REV.prevKey!==null) pickNext();
+}
+function initReview(){
+  $("revNext").onclick=revNext; $("revSkip").onclick=revSkip; $("revEnd").onclick=endReview;
+  $("dueCard").addEventListener("click",e=>{
+    const b=e.target.closest("button"); if(!b) return;
+    if(b.id==="revStart") startReview();
+    else if(b.id==="revClose"){ REV.summary=null; renderDue(); }
+    else if(b.dataset.scale) practiseScale(b.dataset.scale);
+    else if(b.dataset.notes) practiseNotes();
+  });
+  paintDue();
+  setInterval(paintDue, 5*60*1000);
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden) paintDue(); });
 }
 
 /* ================= ACTIVITY: days, goal, streaks, achievements ================= */
@@ -2727,6 +3005,7 @@ function refreshViews(){
   daysDirty(); actCheck(true);
   try{ renderScore(); }catch(e){}
   if(!$("view-prog").hidden){ renderAct(); renderProf(); }
+  paintDue();
 }
 function wipeLocal(){
   ACT.noSave=true;
@@ -2827,7 +3106,7 @@ function setTab(which){
   try{ const tb=$("tab-"+which), bar=tb.parentElement; bar.scrollLeft = tb.offsetLeft - (bar.clientWidth-tb.offsetWidth)/2; }catch(e){}
   if(which!=="scales"){ stop(); sclStop(); if($("optMic")) $("optMic").checked=false; }
   if(which!=="songs") songStop();
-  if(which==="prog"){ renderAct(); renderProf(); }
+  if(which==="prog"){ renderAct(); renderProf(); renderDue(); }
   store.set("tab",which);
 }
 TABS.forEach(t=>$("tab-"+t).onclick=()=>setTab(t));
@@ -2841,7 +3120,7 @@ document.addEventListener("keydown",e=>{
   else if(e.key==="ArrowRight"){ e.preventDefault(); cards?grade(true):(stop(),go(S.i+1,true)); }
   else if(e.key==="ArrowLeft"){ e.preventDefault(); cards?grade(false):(stop(),go(S.i-1,true)); }
 });
-initScales(); initCards(); initSongs(); initProf(); initAct(); initSync(); setTab(store.get("tab","scales"));
+initScales(); initCards(); initSongs(); initProf(); initAct(); initSync(); initReview(); setTab(store.get("tab","scales"));
 </script>
 </body>
 </html>

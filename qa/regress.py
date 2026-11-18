@@ -609,6 +609,98 @@ def _(env):
             "prof_after": pg2.evaluate('()=>Object.keys(PROF)'), "file": dl.value.suggested_filename.split("-")[0]}
 
 
+# ---------------------------------------------------------------- spaced review
+REVIEW_SEED = r'''()=>{
+  const now=Date.now(), D=86400000, P={}, ds=t=>{ const d=new Date(t); d.setHours(0,0,0,0); return d.getTime(); };
+  const L=(id,label,cat,score,daysAgo,extra)=>P[id]=Object.assign({label,cat,score,best:Math.max(score,80),reps:4,tries:40,hits:32,last:now-daysAgo*D},extra||{});
+  L("scale:melmin:9","A melodic minor scale","scales",64,2);
+  L("scale:blues:7","G blues scale","scales",86,9);
+  L("scale:major:7","G major scale","scales",92,1,{ivl:12,due:ds(now-D)+12*D});
+  L("scale:natmin:2","D minor scale","scales",78,3,{ivl:4,due:ds(now-3*D)+4*D});
+  L("note:58","A♯3","notes",55,3,{ivl:3,due:ds(now-3*D)+3*D});
+  L("note:86","D6","notes",40,3,{ivl:3,due:ds(now-3*D)+3*D});
+  L("note:61","C♯4","notes",72,8,{ivl:8,due:ds(now-8*D)+8*D});
+  L("note:57","A3","notes",88,5,{ivl:14,due:ds(now-5*D)+14*D});
+  L("song:lowdown:1","Low Down Sunday — The climb","pieces",58,6);
+  localStorage.setItem("bari:prof",JSON.stringify(P));
+}'''
+TXT = lambda sel: f'()=>$("{sel}").innerText.replace(/\\s+/g," ").trim()'
+NOTIME = lambda s: re.sub(r"in (<1 min|\d+ min|\d+h \d+m)", "in <t>", s)
+
+@check("review.intervals")
+def _(env):
+    pg = env.page()
+    if not E(pg, 'typeof nextGap==="function"'): return "n/a"
+    return E(pg, '''()=>{ const D=86400000, n=Date.now(); let prev=0,last=0,t=n,clean=[];
+      for(let k=0;k<6;k++){ const g=nextGap(prev,last,1,t); clean.push(g); last=t; t+=g*D; prev=g; }
+      return {clean, slip_from_2:nextGap(2,n-2*D,14/15,n), eighty_from_7:nextGap(7,n-7*D,.8,n), rough_from_16:nextGap(16,n-16*D,.4,n),
+        late_clean_from_7:nextGap(7,n-9*D,1,n), same_day:nextGap(7,n,1,n), early_from_7:nextGap(7,n-2*D,1,n), cap:nextGap(170,n-170*D,1,n)}; }''')
+
+@check("review.due_list")
+def _(env):
+    pg = env.page()
+    if not E(pg, 'typeof startReview==="function"'): return "n/a"
+    E(pg, REVIEW_SEED); pg.reload(); pg.wait_for_timeout(350)
+    out = {"badges": E(pg, '()=>[$("dueScales").textContent,$("dueCards").textContent,$("tab-songs").textContent.trim()]'),
+           "notes_from": E(pg, '()=>$("cKey").querySelector(\'option[value="due"]\').textContent')}
+    pg.click("#tab-prog"); pg.wait_for_timeout(150)
+    out["card"] = E(pg, TXT("dueCard")); out["tiles"] = E(pg, TXT("profTiles"))
+    out["next_column"] = E(pg, '()=>[...document.querySelectorAll(".prow")].map(r=>r.querySelector(".pname").textContent+" | "+r.querySelector(".pnext").textContent)')
+    out["note_tiles"] = E(pg, '()=>[...document.querySelectorAll(".ntile")].map(t=>t.innerText.replace(/\\s+/g," "))')
+    pg.select_option("#profSort", "due")
+    out["due_sort"] = E(pg, '()=>[...document.querySelectorAll(".prow .pname")].map(e=>e.textContent)')
+    env.shot(pg, "progress_due")
+    pg.click('#dueCard [data-scale]'); pg.wait_for_timeout(100)
+    out["practise_scale"] = E(pg, '()=>[!$("view-scales").hidden, $("sType").value, $("sKey").value]')
+    pg.click("#tab-prog"); pg.click('#dueCard [data-notes]'); pg.wait_for_timeout(100)
+    out["practise_notes"] = E(pg, '()=>[!$("view-cards").hidden, $("cKey").value, C.g.map(n=>nm(n)+n.o).join(","), $("cRegWrap").style.display]')
+    return out
+
+REVIEW_FEED = r'''(miss)=>{ const feed=(m,n)=>{ for(let k=0;k<n;k++){ SM.heard.add(m);
+      if(SM.cand!==m){SM.cand=m;SM.since=performance.now()-1000;SM.n=1;} else SM.n++;
+      const w=S.seq[S.i].m; if(m===w&&SM.n>=3){ sclStep('ok',m); return; } } };
+    let g=0; while(!SM.done && g++<100){ if(miss.includes(S.i)){ sclStep('miss', S.seq[S.i].m+1); continue; } feed(S.seq[S.i].m,4); }
+    return S.res.join(","); }'''
+
+@check("review.session")
+def _(env):
+    pg = env.page()
+    if not E(pg, 'typeof startReview==="function"'): return "n/a"
+    E(pg, REVIEW_SEED); pg.reload(); pg.wait_for_timeout(350)
+    pg.click("#tab-prog"); pg.click("#revStart"); pg.wait_for_timeout(800)
+    out = {"step1": E(pg, '()=>[$("revCount").textContent, $("revTitle").innerText.replace(/\\s+/g," "), $("revSteps").innerText.replace(/\\s+/g," "), $("sType").value, $("sKey").value, SM.on, !!ACT.sess, $("optLoop").checked]')}
+    E(pg, f"()=>({REVIEW_FEED})([5])"); pg.wait_for_timeout(80)
+    out["run1"] = E(pg, '()=>[$("sclMsg").textContent, $("revNext").innerText.trim(), $("revSkip").hidden]')
+    env.shot(pg, "review_scale")
+    pg.click("#revNext"); pg.wait_for_timeout(300)
+    E(pg, f"()=>({REVIEW_FEED})([])"); pg.wait_for_timeout(80)
+    out["run2"] = E(pg, '()=>[$("revCount").textContent, $("sType").value, $("sclMsg").textContent, $("revNext").innerText.trim()]')
+    pg.click("#revNext"); pg.wait_for_timeout(300)
+    out["notes"] = E(pg, '()=>[$("revCount").textContent, !$("view-cards").hidden, $("cKey").value, REV.deck.join(","), C.g.map(n=>nm(n)+n.o).join(",")]')
+    env.shot(pg, "review_notes")
+    for ok in (True, False, True):
+        pg.click("#reveal"); pg.click("#got" if ok else "#miss"); pg.wait_for_timeout(60)
+    pg.wait_for_timeout(300)
+    out["finished"] = E(pg, '()=>[REV.on, $("revBar").hidden, !$("view-prog").hidden, !!ACT.sess, $("optLoop").checked, $("cKey").value]')
+    out["summary"] = NOTIME(E(pg, TXT("dueCard")))
+    env.shot(pg, "review_done")
+    out["gaps"] = E(pg, '()=>Object.entries(PROF).filter(([k])=>!k.startsWith("song")).map(([k,d])=>k+":"+(d.ivl||"-")).join(" ")')
+    pg.click("#revClose"); out["after_close"] = E(pg, TXT("dueCard"))
+    E(pg, '()=>{ PROF["scale:major:7"].due=dayStart(Date.now()); PROF["note:57"].due=dayStart(Date.now()); renderDue(); }')
+    pg.click("#revStart"); pg.wait_for_timeout(500); pg.click("#revSkip"); pg.wait_for_timeout(200)
+    out["skip_then_end"] = [E(pg, '$("revCount").textContent')]
+    pg.click("#revEnd"); pg.wait_for_timeout(200)
+    out["skip_then_end"].append(NOTIME(E(pg, TXT("dueCard"))))
+    return out
+
+@check("fingering.left_pinky")
+def _(env):
+    """Where each left pinky key sits in the diagram (player's view: G# top, C# outside and B inside, Bb along the bottom)."""
+    pg = env.page()
+    return E(pg, '''()=>{ const out={}; for(const k of ["gs","lcs","lb","lbb"]){ const d=document.createElement("div"); d.innerHTML=fingSVG([k],460);
+      const r=d.querySelector("rect.key.on"); out[k]=[+r.getAttribute("x")+ +r.getAttribute("width")/2, +r.getAttribute("y")+ +r.getAttribute("height")/2, +r.getAttribute("width"), r.nextElementSibling.textContent]; } return out; }''')
+
+
 # ---------------------------------------------------------------- sign-in and sync
 TOT = "()=>Math.round(Object.values(mergedDays()).reduce((a,r)=>a+r.min,0))"
 DAYS3 = "()=>{const t=day0(new Date()); return [-2,-1,0].map(o=>{const r=dget(dkey(addD(t,o))); return r?Math.round(r.min):0;})}"
